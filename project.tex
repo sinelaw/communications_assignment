@@ -1,0 +1,59 @@
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
+
+\documentclass[onecolumn,technote,twoside,a4paper,10pt,english]{IEEEtran}
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+
+\begin{document}
+
+\title{Project in Digital Communication Systems}
+\author{Noam Lewis}
+
+\maketitle
+
+\section{Answers to Preparatory Questions}
+
+We have selected modulation number 5, entailing digital input data, $R_b=800$, QAM, and $B_{ch}=800Hz$.
+
+\begin{enumerate}
+\item The modulated message $s_M(t)$ is:
+  \begin{eqnarray}
+    \label{eq:s_M}
+    s_M(t) &=& Re\{s_d(t)\sqrt{2P_c}e^{j\omega_c t}\} \\
+    &=& \sqrt{2P_c}\sum_n{|A_n| g(t-n T_s) cos(\omega_ct + \phi_n)}
+  \end{eqnarray}
+  In the case of $t \in K T_s$, where $K \in \mathbb{Z}$, we can use the fact that $\forall t \notin n T_s : g(t-n T_s)=0$, and $1$ otherwise to arrive at:
+  \begin{equation}
+    s_M(K T_s) = \sqrt{2P_c}|A_k|cos(\omega_c K T_s - \phi_K)
+  \end{equation}
+  Where  $A_n=|A_n|e^{j\phi_n}$.
+\item Using known results from DSB modulation, and because we have a full response filter, and assuming that the symbols have expectation $0$:
+  \begin{eqnarray}
+    S_M(f) &=& \frac{P_c}{2}(S_d(f-f_c)+S_d(f+f_c)) \\
+    S_d(f) &=& T_s sinc(\pi f T_s)e^{-j\pi f T_s}
+  \end{eqnarray}
+  Substituting $S_d$ into $S_m$ we get:
+  \begin{equation}
+    \label{eq:S_M(f)}
+    S_M(f) = \frac{P_c}{2R_s}\left[ sinc(\pi T_s(f-f_c)) e^{-j\pi(f-f_c)T_s} 
+                           + sinc (\pi T_s(f+f_c))e^{-j\pi(f+f_c)T_s} \right]
+  \end{equation}
+  \begin{figure}[h]
+    \label{fig:S_M(f)}
+    \centering
+    \input{q2.latex}
+    \caption{$S_M(f)$ where $R_s=10,f_c=100$}
+  \end{figure}
+
+
+\end{enumerate}
+
+
+\end{document}
+

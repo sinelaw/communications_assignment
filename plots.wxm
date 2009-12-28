@@ -1,0 +1,57 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 0.8.2 ] */
+
+/* [wxMaxima: comment start ]
+wxMaxima 0.8.2 http://wxmaxima.sourceforge.net
+Maxima 5.17.1 http://maxima.sourceforge.net
+Using Lisp GNU Common Lisp (GCL) GCL 2.6.7 (aka GCL)
+Distributed under the GNU Public License. See the file COPYING.
+Dedicated to the memory of William Schelter.
+The function bug_report() provides bug reporting information.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+wxMaxima 0.8.2 http://wxmaxima.sourceforge.net
+Maxima 5.17.1 http://maxima.sourceforge.net
+Using Lisp GNU Common Lisp (GCL) GCL 2.6.7 (aka GCL)
+Distributed under the GNU Public License. See the file COPYING.
+Dedicated to the memory of William Schelter.
+The function bug_report() provides bug reporting information.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+cabs(sinc(%pi*(x-100))*exp(-%i*%pi*(x-100))+sinc(%pi*(x+100))*exp(-%i*%pi*(x+100)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Question 2
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f(x):=(2*Rs)^(-1)*cabs(sinc(%pi*Ts*(x-100))*exp(-%i*%pi*(x-100)*Ts)+sinc(%pi*Ts*(x+100))*exp(-%i*Ts*%pi*(x+100)));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+sinc(x):=sin(x)/x;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Rs:10;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Ts:1/Rs;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+plot2d([f(x)], [x,70,130], [gnuplot_term, latex], [axes, x'], [ylabel, "$S_M(f)$"],
+ [gnuplot_out_file, "/home/noam/study/university/semester7/diccom/q2.latex"])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Question 3
+   [wxMaxima: comment end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
