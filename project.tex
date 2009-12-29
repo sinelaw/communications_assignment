@@ -113,7 +113,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \label{fig:4qam-const}
   \end{figure}
 
-\item The distance between adjacent symbols is $\frac{2}{\sqrt{2}}=\sqrt{2}$.
+\item The Euclidean distance between adjacent symbols is $\frac{2}{\sqrt{2}}=\sqrt{2}$. In terms of phase drift, the distance is $\pi/4$.
 
 \item Effects of channel on the communication system:
   \begin{enumerate}
@@ -124,7 +124,9 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
       n_r(t) &=& n_{r_i}(t)cos(\omega_c t) - n_{r_q}(t) sin(\omega_c t) \\
     \end{eqnarray*}
     The noise component affects $\text{SNR}_d$. The relevant parameter is the noise power (variance) $\sigma_z^2$.
-  \item Limited channel bandwidth - ISI (Inter Symbol Intereference): In this case the received symbol $q_k$ has an additional component, the ISI: $q_k = p_0A_K + \sum_{n \neq k} {A_n p_{k-n}} + z_k$.
+
+  \item Limited channel bandwidth - ISI (Inter Symbol Intereference): In this case the received symbol $q_k$ has an additional component, the ISI: $q_k = p_0A_K + \sum_{n \neq k} {A_n p_{k-n}} + z_k$. This effect can be countered by, for example, an optimal sequential detector.
+
   \item Phase and Frequency shift - after demodulation (separately for the two bases), we get:
     \begin{eqnarray*}
       x_{d_i}(t) &=& x(t)A_c cos(\omega_c t) \\
@@ -134,8 +136,26 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
                     + \text{ Higher frequency components} \\
       x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) = A_c\sqrt{\frac{P_r}{2}} sin(\phi_k + \Delta \omega + \Psi) + \text{ ... }
     \end{eqnarray*}
-    Where $\Delta \omega = \omega_c - \omega_r$ is the frequency shift, and $\Psi$ is the phase shift.
+    Where $\Delta \omega = \omega_c - \omega_r$ is the frequency shift, and $\Psi$ is the phase shift. Since we are using 4-QAM, if the total shift nears $\pi/8$ the symbols may be confused, so a phase synchronizer is required.
+
   \end{enumerate}
+
+  \item Definitions of $\text{SNR}_{bit}^{(DD)}$ and $\text{SNR}_{sym}^{(DD)}$: 
+    
+\item $erfc(\lambda) = 2Q( \sqrt{2}\lambda )$.
+
+\item Because we are using code gray, the following relation holds whenever the SNR is high enough to make transitions to far symbols unlikely:
+    \begin{equation*}
+      P_{err,bit}^{(DD)} \approx \frac{P_{err,sym}^{(DD)}}{log_2{M}} = \frac{P_{err,sym}^{(DD)}}{2}
+    \end{equation*}
+    The probability for symbol error is defined by:
+    \begin{equation*}
+      P_{err,sym}^{(DD)} = \sum_{m=1}^M {p_m P(\text{error} | A_m)} = \sum_{m=1}^M {p_m \left[ 1 - \prod_{n=1,n \neq m}^M \left( 1 - P(A_n | A_m) \right) \right]} 
+    \end{equation*}
+    Where, if $d_{m,n}$ is the Euclidean distance between symbols $A_m$ and $A_n$:
+    \begin{equation*}
+      P(A_n | A_m) = Q\left( \frac{d_{m,n}}{2 \sigma_z}\right)
+    \end{equation*}
 
 \end{enumerate}
 
