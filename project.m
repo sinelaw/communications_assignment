@@ -16,7 +16,7 @@ Symbols = [SqrtHalf + 1j * SqrtHalf,
           -SqrtHalf + 1j * SqrtHalf, 
           -SqrtHalf - 1j * SqrtHalf, 
            SqrtHalf - 1j * SqrtHalf];
-SymbolBits = [[0 0]; [0 1]; [1 0]; [1 1]];
+SymbolBits = [0,1,3,2];
 
 % Random bits
 NumberOfRandomBits = NumberOfRandomSymbols*log2(M);
@@ -28,7 +28,7 @@ NumberOfOnes = sum(RandomBits);
 disp('Ratio of ones / zeros = ');
 disp(NumberOfOnes / NumberOfRandomBits);
 
-
+% Plot the constellation
 plot(Symbols, 'r+');
 grid on;
 axis([-2 2 -2 2]);
@@ -36,3 +36,4 @@ xlabel('Real');
 ylabel('Imaginary');
 title('Symbol Constellation');
 
+encoder(RandomBits, Symbols, SymbolBits);
