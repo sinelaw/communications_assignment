@@ -5,7 +5,14 @@ NumberOfRandomSymbols = 5000;
 Rb = 800;
 M = 4;
 Bch = 800;
-omega_c = 10000; % Depends on channel's parameters
+
+f_c = 20*10^3;% carrier frequency
+omega_c = 2*pi*f_c; 
+
+f_s = 4*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
+P_c = 10; % transmission power
+A_c = sqrt(2*P_c); % transmission amplitude
+
 
 BitsPerSymbol = log2(M);
 Rs = Rb / BitsPerSymbol;
@@ -20,7 +27,7 @@ Symbols = [SqrtHalf + 1j * SqrtHalf,
 SymbolBitMap = [0,1,3,2];
 
 % Small data set
-SymbolBits = [0, 0, 0, 1, 1, 1, 1, 0];
+SymbolBits = [0, 0, 1, 1, 1, 0, 0, 1];
 
 % Random bits data set
 NumberOfRandomBits = NumberOfRandomSymbols*log2(M);
@@ -42,7 +49,7 @@ title('Symbol Constellation');
 print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
 [ak, bk] = encoder(SymbolBits, Symbols, SymbolBitMap, BitsPerSymbol);
-[ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, 100);
+[ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
 plot(t, ModulatedSymbolBits);
 xlabel('time');
 ylabel('s_M(t)');
@@ -50,10 +57,16 @@ title('Modulated small data set in time domain');
 print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png');
 
 
+% Modulate the RandomBits data set
 [ak, bk] = encoder(RandomBits, Symbols, SymbolBitMap, BitsPerSymbol);
-[ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, 100);
-% TODO calculate f x-axis
-plot(abs(fft(ModulatedRandomBits)));
+[ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
+FFTFreqResp = abs(fft(ModulatedRandomBits));
+
+% Fix the fft result so the we have negative frequencies on the left
+frequencies = f_s / length(ModulatedRandomBits) * [-length(ModulatedRandomBits)/2 : length(ModulatedRandomBits)/2-1];
+FreqResp = [FFTFreqResp(length(FFTFreqResp)/2:end) ,  FFTFreqResp(1:length(FFTFreqResp)/2-1)];
+
+plot(frequencies, FreqResp);
 xlabel('frequency');
 ylabel('S_M(f)');
 title('Modulated random data set in frequency domain');
