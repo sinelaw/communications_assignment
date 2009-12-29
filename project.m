@@ -9,6 +9,7 @@ Bch = 800;
 
 BitsPerSymbol = log2(M);
 Rs = Rb / BitsPerSymbol;
+Ts = 1 / Rs;
 
 SqrtHalf = 1/sqrt(2);
 
@@ -16,9 +17,12 @@ Symbols = [SqrtHalf + 1j * SqrtHalf,
           -SqrtHalf + 1j * SqrtHalf, 
           -SqrtHalf - 1j * SqrtHalf, 
            SqrtHalf - 1j * SqrtHalf];
-SymbolBits = [0,1,3,2];
+SymbolBitMap = [0,1,3,2];
 
-% Random bits
+% Small data set
+SymbolBits = [0, 0, 0, 1, 1, 1, 1, 0];
+
+% Random bits data set
 NumberOfRandomBits = NumberOfRandomSymbols*log2(M);
 RandomBits = arrayfun(@(x) (x > 0.5), rand(NumberOfRandomBits, 1));
 
@@ -35,6 +39,21 @@ axis([-2 2 -2 2]);
 xlabel('Real');
 ylabel('Imaginary');
 title('Symbol Constellation');
+print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
-[ak, bk] = encoder(RandomBits, Symbols, SymbolBits, BitsPerSymbol);
+[ak, bk] = encoder(SymbolBits, Symbols, SymbolBitMap, BitsPerSymbol);
+ModulatedSymbolBits = modulate(ak, bk, 1, 10, 0, 0.01);
+plot(ModulatedSymbolBits);
+xlabel('time');
+ylabel('s_M(t)');
+title('Modulated small data set in time domain');
+print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png');
 
+
+[ak, bk] = encoder(RandomBits, Symbols, SymbolBitMap, BitsPerSymbol);
+ModulatedRandomBits = modulate(ak, bk, Ts, 10000, 0, 0.001);
+plot(abs(fft(ModulatedSymbolBits)));
+xlabel('frequency');
+ylabel('S_M(f)');
+title('Modulated random data set in frequency domain');
+print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft.png');
