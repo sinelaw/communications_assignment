@@ -1,16 +1,19 @@
-function [ s_M ] = modulate( ak, bk, Ts, omega_c, phi_0 , dt)
+function [ s_M, t ] = modulate( ak, bk, Ts, omega_c, phi_0 , SamplesPerSymbol)
 %modulate Modulates using (cos, -sin) basis the encoded input vector (Ak = ak + j bk)
 %   Modulates the symbols (ak + jbk), with a time resolution of dt
 
 NumberOfSymbols = length(ak);
+dt = Ts / SamplesPerSymbol;
 
-s_M = []
+s_M = [];
+t = [];
 for i = 1:NumberOfSymbols
     a = ak(i);
     b = bk(i);
-    SymbolTimes = i*Ts:dt:(i+1)*Ts;
+    SymbolTimes = (i-1)*Ts:dt:i*Ts;
     samples = a*cos(omega_c * SymbolTimes + phi_0) - b*sin(omega_c * SymbolTimes + phi_0);
     s_M = [s_M, samples];
+    t = [t, SymbolTimes];
 end
 
 end

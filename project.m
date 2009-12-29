@@ -1,11 +1,11 @@
 
-NumberOfRandomSymbols = 5;
+NumberOfRandomSymbols = 5000;
 
 % Modulation parameters
 Rb = 800;
 M = 4;
 Bch = 800;
-
+omega_c = 10000; % Depends on channel's parameters
 
 BitsPerSymbol = log2(M);
 Rs = Rb / BitsPerSymbol;
@@ -42,8 +42,8 @@ title('Symbol Constellation');
 print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
 [ak, bk] = encoder(SymbolBits, Symbols, SymbolBitMap, BitsPerSymbol);
-ModulatedSymbolBits = modulate(ak, bk, 1, 10, 0, 0.01);
-plot(ModulatedSymbolBits);
+[ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, 100);
+plot(t, ModulatedSymbolBits);
 xlabel('time');
 ylabel('s_M(t)');
 title('Modulated small data set in time domain');
@@ -51,8 +51,9 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png'
 
 
 [ak, bk] = encoder(RandomBits, Symbols, SymbolBitMap, BitsPerSymbol);
-ModulatedRandomBits = modulate(ak, bk, Ts, 10000, 0, 0.001);
-plot(abs(fft(ModulatedSymbolBits)));
+[ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, 100);
+% TODO calculate f x-axis
+plot(abs(fft(ModulatedRandomBits)));
 xlabel('frequency');
 ylabel('S_M(f)');
 title('Modulated random data set in frequency domain');
