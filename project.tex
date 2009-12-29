@@ -9,7 +9,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{caption}
-
+\usepackage{float}
 \usepackage{tikz}
 \usepackage{euler}                                %Nicer numbers
 
@@ -26,90 +26,116 @@
 We have selected modulation number 5, entailing digital input data, $R_b=800$, QAM, and $B_{ch}=800Hz$. Because $R_s=\frac{R_b}{log_2M}$, and the required bandwidth is $B_{min}=2R_s=800Hz$, we can calculate $M$:
 \begin{eqnarray*}
   log_2M &=& \frac{R_b}{R_s} \\
-         &=& \frac{2R_b}{B_{min}} \\
-         &=& \frac{1600}{800} = 2
+  &=& \frac{2R_b}{B_{min}} \\
+  &=& \frac{1600}{800} = 2
 \end{eqnarray*}
 Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \in \{\pm \sqrt{1/2} \pm j \sqrt{1/2} \}$ with $|A_n|=1$ and $\phi_n \in \{ \pi/4, 3\pi/4, 5\pi/4, 7\pi/4 \}$. 
 
 \begin{enumerate}
 \item The modulated message $s_M(t)$ is:
-  \begin{eqnarray}
+  \begin{eqnarray*}
     \label{eq:s_M}
     s_M(t) &=& Re\{s_d(t)\sqrt{2P_c}e^{j\omega_c t}\} \\
-    &=& \sqrt{2P_c}\sum_n{|A_n| g(t-n T_s) cos(\omega_ct + \phi_n)}
-  \end{eqnarray}
+           &=& \sqrt{2P_c}\sum_n{|A_n| g(t-n T_s) cos(\omega_ct + \phi_n)} \\
+           &=& \sqrt{2P_c}\sum_n{ |A_n| cos(\phi_n) g(t-n T_s) cos(\omega_ct) - |A_n| sin(\phi_n) g(t-n T_s) sin(\omega_ct)} \\
+           &=& \sqrt{2P_c}\sum_n{ A_{n_i} g(t-n T_s) cos(\omega_ct) - A_{n_q} g(t-n T_s) sin(\omega_ct)}
+  \end{eqnarray*}
+  Where  $A_n=A_{n_i}+jA_{n_q}=|A_n|e^{j\phi_n}=e^{j\phi_n}$.
   In the case of $t \in K T_s$, where $K \in \mathbb{Z}$, we can use the fact that $\forall t \notin n T_s : g(t-n T_s)=0$, and $1$ otherwise to arrive at:
-  \begin{equation}
-    s_M(K T_s) = \sqrt{2P_c}cos(\omega_c K T_s - \phi_K)
-  \end{equation}
-  Where  $A_n=|A_n|e^{j\phi_n}=e^{j\phi_n}$.
+  \begin{eqnarray*}
+    s_M(t \in K T_s) &=& \sqrt{2P_c} cos(\omega_c t - \phi_K) \\
+                     &=& \sqrt{2P_c} \left[ cos(\phi_K)cos(\omega_c t) - sin(\phi_K)sin(\omega_c t) \right]
+  \end{eqnarray*}
 \item Using known results from DSB modulation, and because we have a full response filter, and assuming that the symbols have expectation $0$:
-  \begin{eqnarray}
+  \begin{eqnarray*}
     S_M(f) &=& \frac{P_c}{2}(S_d(f-f_c)+S_d(f+f_c)) \\
     S_d(f) &=& T_s sinc(\pi f T_s)e^{-j\pi f T_s}
-  \end{eqnarray}
+  \end{eqnarray*}
   Substituting $S_d$ into $S_m$ we get:
   \begin{equation}
     \label{eq:S_M(f)}
     S_M(f) = \frac{P_c}{2R_s}\left[ sinc(\pi T_s(f-f_c)) e^{-j\pi(f-f_c)T_s} 
-                           + sinc (\pi T_s(f+f_c))e^{-j\pi(f+f_c)T_s} \right]
+      + sinc (\pi T_s(f+f_c))e^{-j\pi(f+f_c)T_s} \right]
   \end{equation}
-  \begin{figure}[h]
-    \label{fig:S_M(f)}
+  The graph of $S_M(f)$ with example parameters is show in Figure \ref{fig:S_M(f)}.
+  \begin{figure}[H]
     \centering
     \input{q2.latex}
     \caption{$S_M(f)$ for $R_s=T_s^{-1}=10,f_c=100$}
+    \label{fig:S_M(f)}
   \end{figure}
 
 \item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{log_2M}$ and $K_b=log_2M$.
 
 \item In Gray coding, every two consequetive numbers differ by exactly one bit. The encoding reduces BER by assigning similar codes to closer symbols. The probability of receiving a symbol in close vicinity to the transmitted one is higher, so errors with small number of bit flips are more probable. In our case (where $M=4$) we can assign:
 
-\begin{center}
-  \begin{tabular}{| l | l | }
-    \hline
-    Code & Symbol \\ \hline
-    $00$ & $+\sqrt{1/2}+j\sqrt{1/2}$   \\ \hline
-    $01$ & $-\sqrt{1/2}+j\sqrt{1/2}$  \\ \hline
-    $11$ & $-\sqrt{1/2}-j\sqrt{1/2}$  \\ \hline
-    $10$ & $+\sqrt{1/2}-j\sqrt{1/2}$   \\
-    \hline
-  \end{tabular}
-\end{center}
+  \begin{center}
+    \begin{tabular}{| l | l | }
+      \hline
+      Code & Symbol \\ \hline
+      $00$ & $+\sqrt{1/2}+j\sqrt{1/2}$   \\ \hline
+      $01$ & $-\sqrt{1/2}+j\sqrt{1/2}$  \\ \hline
+      $11$ & $-\sqrt{1/2}-j\sqrt{1/2}$  \\ \hline
+      $10$ & $+\sqrt{1/2}-j\sqrt{1/2}$   \\
+      \hline
+    \end{tabular}
+  \end{center}
 
 \item The symbol constellation is shown in Figure \ref{fig:4qam-const}. 
-\begin{figure}[h]
-\begin{center}
-  \begin{tikzpicture}[scale=3]
-    %Circles 
-    \foreach \r in { 1}
-      \draw[Azure4, thin] (0,0) circle (\r);
-    %45° Rays
-    \foreach \a in {0, 45,...,359}
-      \draw[Azure4] (\a:1) -- (\a:1.5);
-    %Radius labels (background filled white)
-    \draw (0.707,0) node[inner sep=1pt,below=3pt,rectangle,fill=white] {$\frac{1}{\sqrt{2}}$};
-    \draw (0,0.707) node[inner sep=1pt,left=3pt,rectangle,fill=white] {$j\frac{1}{\sqrt{2}}$};
-    \draw (-0.707,0) node[inner sep=1pt,below=3pt,rectangle,fill=white] {$-\frac{1}{\sqrt{2}}$};
-    \draw (0,-0.707) node[inner sep=1pt,left=3pt,rectangle,fill=white] {$-j\frac{1}{\sqrt{2}}$};
-    %Main rays
-    \foreach \a in {0, 90,...,359}
-      \draw[very thick] (0, 0) -- (\a:1.5);
-    %Angle labels  
-    \foreach \a in {0, 45,...,359}
-      \draw (\a: 1.6) node {$\a^\circ$};
-    %Central point
-    \draw[fill=red] (0.707,0.707) circle(0.4mm) node[inner sep=1pt,below=4pt,rectangle] {$00$};
-    \draw[fill=red] (-0.707,0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$01$};
-    \draw[fill=red] (-0.707,-0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$11$};
-    \draw[fill=red] (0.707,-0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$10$};
-  \end{tikzpicture}
-\end{center}
+  \begin{figure}[H]
+    \begin{center}
+      \begin{tikzpicture}[scale=3]
+        % Circles 
+        \foreach \r in { 1}
+        \draw[Azure4, thin] (0,0) circle (\r);
+        % 45° Rays
+        \foreach \a in {0, 45,...,359}
+        \draw[Azure4] (\a:1) -- (\a:1.5);
+        % Radius labels (background filled white)
+        \draw (0.707,0) node[inner sep=1pt,below=3pt,rectangle,fill=white] {$\frac{1}{\sqrt{2}}$};
+        \draw (0,0.707) node[inner sep=1pt,left=3pt,rectangle,fill=white] {$j\frac{1}{\sqrt{2}}$};
+        \draw (-0.707,0) node[inner sep=1pt,below=3pt,rectangle,fill=white] {$-\frac{1}{\sqrt{2}}$};
+        \draw (0,-0.707) node[inner sep=1pt,left=3pt,rectangle,fill=white] {$-j\frac{1}{\sqrt{2}}$};
+        % Main rays
+        \foreach \a in {0, 90,...,359}
+        \draw[very thick] (0, 0) -- (\a:1.5);
+        % Angle labels  
+        \foreach \a in {0, 45,...,359}
+        \draw (\a: 1.6) node {$\a^\circ$};
+        % Central point
+        \draw[fill=red] (0.707,0.707) circle(0.4mm) node[inner sep=1pt,below=4pt,rectangle] {$00$};
+        \draw[fill=red] (-0.707,0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$01$};
+        \draw[fill=red] (-0.707,-0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$11$};
+        \draw[fill=red] (0.707,-0.707) circle(0.4mm)  node[inner sep=1pt,below=4pt,rectangle] {$10$};
+      \end{tikzpicture}
+    \end{center}
     \caption{Constellation of symbols. Each node is labeled with the assigned (gray coded) bit pattern.}
-\label{fig:4qam-const}
-\end{figure}
+    \label{fig:4qam-const}
+  \end{figure}
 
 \item The distance between adjacent symbols is $\frac{2}{\sqrt{2}}=\sqrt{2}$.
+
+\item Effects of channel on the communication system:
+  \begin{enumerate}
+  \item AWGN - The noise appears as an additive element in the symbols entering the decision device. If $a_k$ is the portion originating from the source signal, and $z_k$ is the effect of the noise, then $q_k = a_k + z_k$. For a time period where $t \in k T_s$ we have:
+    \begin{eqnarray*}
+      x(t) &=& s_r(t) + n_r(t) \\
+      s_r(t) &=& k_{ch}s_M(t) = \sqrt{2P_r} \left[ cos(\phi_K)cos(\omega_c t) - sin(\phi_K)sin(\omega_c t) \right]  \\
+      n_r(t) &=& n_{r_i}(t)cos(\omega_c t) - n_{r_q}(t) sin(\omega_c t) \\
+    \end{eqnarray*}
+    The noise component affects $\text{SNR}_d$. The relevant parameter is the noise power (variance) $\sigma_z^2$.
+  \item Limited channel bandwidth - ISI (Inter Symbol Intereference): In this case the received symbol $q_k$ has an additional component, the ISI: $q_k = p_0A_K + \sum_{n \neq k} {A_n p_{k-n}} + z_k$.
+  \item Phase and Frequency shift - after demodulation (separately for the two bases), we get:
+    \begin{eqnarray*}
+      x_{d_i}(t) &=& x(t)A_c cos(\omega_c t) \\
+                &=& A_c\sqrt{2P_r} cos(\omega_r t - \phi_K + \Psi) cos(\omega_c t) + A_c cos(\omega_c t) n_r(t)\\
+                &=& A_c\sqrt{\frac{P_r}{2}} cos(\phi_k + \Delta \omega + \Psi) 
+                    + \underbrace{ \frac{A_c}{2} \left( n_{r_i}(t) + n_{r_q}(t) \right) }_{\mbox{additive noise component}} 
+                    + \text{ Higher frequency components} \\
+      x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) = A_c\sqrt{\frac{P_r}{2}} sin(\phi_k + \Delta \omega + \Psi) + \text{ ... }
+    \end{eqnarray*}
+    Where $\Delta \omega = \omega_c - \omega_r$ is the frequency shift, and $\Psi$ is the phase shift.
+  \end{enumerate}
 
 \end{enumerate}
 
