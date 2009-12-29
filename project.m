@@ -1,5 +1,5 @@
 
-NumberOfRandomSymbols = 5000;
+NumberOfRandomSymbols = 5;
 
 % Modulation parameters
 Rb = 800;
@@ -36,4 +36,5 @@ xlabel('Real');
 ylabel('Imaginary');
 title('Symbol Constellation');
 
-encoder(RandomBits, Symbols, SymbolBits);
+[ak, bk] = encoder(RandomBits, Symbols, SymbolBits, BitsPerSymbol);
+
