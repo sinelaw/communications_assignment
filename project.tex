@@ -44,18 +44,21 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   In the case of $t \in K T_s$, where $K \in \mathbb{Z}$, we can use the fact that $\forall t \notin n T_s : g(t-n T_s)=0$, and $1$ otherwise to arrive at:
   \begin{eqnarray*}
     s_M(t \in K T_s) &=& \sqrt{2P_c} cos(\omega_c t - \phi_K) \\
-                     &=& \sqrt{2P_c} \left[ cos(\phi_K)cos(\omega_c t) - sin(\phi_K)sin(\omega_c t) \right]
+                     &=& \sqrt{2P_c} \left[ cos(\phi_K)cos(\omega_c t) - sin(\phi_K)sin(\omega_c t) \right] \\
+                     &=& \sqrt{2P_c} \left[ A_{K_i}cos(\omega_c t) - A_{K_q}sin(\omega_c t) \right] 
   \end{eqnarray*}
 \item Using known results from DSB modulation, and because we have a full response filter, and assuming that the symbols have expectation $0$:
   \begin{eqnarray*}
     S_M(f) &=& \frac{P_c}{2}(S_d(f-f_c)+S_d(f+f_c)) \\
-    S_d(f) &=& T_s sinc(\pi f T_s)e^{-j\pi f T_s}
+    G(f)   &=& T_s sinc(\pi f T_s)e^{-j\pi f T_s} \\
+    |G(f)|^2 &=& T_s^2 sinc^2(\pi f T_s)        \\
+    S_d(f) &=& \frac{\sigma_a^2}{T_s} |G(f)|^2 =  T_s\sigma_a^2 sinc^2(\pi f T_s) \\
+    \sigma_a^2 &=& \sum_{k=1}^M{p_k A_k^2} = \frac{1}{4} 4 = 1
   \end{eqnarray*}
   Substituting $S_d$ into $S_m$ we get:
   \begin{equation}
     \label{eq:S_M(f)}
-    S_M(f) = \frac{P_c}{2R_s}\left[ sinc(\pi T_s(f-f_c)) e^{-j\pi(f-f_c)T_s} 
-      + sinc (\pi T_s(f+f_c))e^{-j\pi(f+f_c)T_s} \right]
+    S_M(f) = \frac{P_c}{2R_s}\left[ sinc^2(\pi T_s(f-f_c)) + sinc^2(\pi T_s(f+f_c)) \right]
   \end{equation}
   The graph of $S_M(f)$ with example parameters is show in Figure \ref{fig:S_M(f)}.
   \begin{figure}[H]
@@ -70,15 +73,20 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 \item In Gray coding, every two consequetive numbers differ by exactly one bit. The encoding reduces BER by assigning similar codes to closer symbols. The probability of receiving a symbol in close vicinity to the transmitted one is higher, so errors with small number of bit flips are more probable. In our case (where $M=4$) we can assign:
 
   \begin{center}
-    \begin{tabular}{| l | l | }
+    \begin{table}
+      \centering
+      \begin{tabular}[h!]{| l | l | l |}
       \hline
-      Code & Symbol \\ \hline
-      $00$ & $+\sqrt{1/2}+j\sqrt{1/2}$   \\ \hline
-      $01$ & $-\sqrt{1/2}+j\sqrt{1/2}$  \\ \hline
-      $11$ & $-\sqrt{1/2}-j\sqrt{1/2}$  \\ \hline
-      $10$ & $+\sqrt{1/2}-j\sqrt{1/2}$   \\
+      Code & Symbol & \\ \hline
+      $00$ & $+\sqrt{1/2}+j\sqrt{1/2}$ & $A_1$  \\ \hline
+      $01$ & $-\sqrt{1/2}+j\sqrt{1/2}$ & $A_2$  \\ \hline
+      $11$ & $-\sqrt{1/2}-j\sqrt{1/2}$ & $A_3$  \\ \hline
+      $10$ & $+\sqrt{1/2}-j\sqrt{1/2}$ & $A_4$  \\
       \hline
-    \end{tabular}
+      \end{tabular}
+      \caption{Assignment of bit patterns to symbols}
+      \label{tab:bitsymbols}
+    \end{table}
   \end{center}
 
 \item The symbol constellation is shown in Figure \ref{fig:4qam-const}. 
@@ -158,6 +166,30 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \end{equation*}
 
 \end{enumerate}
+
+\section{Simulation}
+
+\subsection{Data sets}
+\begin{enumerate}
+\item Small data set - one of each bit pattern: $\{00, 01, 11, 10\}$.
+\item Large (random) data set - a random stream of $5^3 log_2M = 10^3$ bits. The data set was created by applying the function $f(x) = \text{\bf{ if }} x>0.5 \text{\bf{ then }} 1 \text{\bf{ else }} 0$ to each element of a vector constructed with the Matlab 'rand' function.
+\end{enumerate}
+
+\subsection{Transmitter}
+
+The symbol/bit patterns appear in Table \ref{tab:bitsymbols}.
+\begin{enumerate}
+\item $P_c = 10W$, therefore $A_c = \sqrt{20}$.
+\item $f_c = 20kHz$ so $w_c = 4\pi \cdot 10^4$.
+\item Sampling frequency (for simulation of the continuous signal) is $f_s = 2f_c = 40khz$.
+\end{enumerate}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=4in]{modulated_small_dataset.png}
+    \caption{$s_M(t)$ for small data set}
+    \label{fig:s_M(t)}
+  \end{figure}
 
 
 \end{document}

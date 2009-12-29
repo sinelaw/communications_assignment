@@ -24,7 +24,13 @@ Symbols = [SqrtHalf + 1j * SqrtHalf,
           -SqrtHalf + 1j * SqrtHalf, 
           -SqrtHalf - 1j * SqrtHalf, 
            SqrtHalf - 1j * SqrtHalf];
-SymbolBitMap = [0,1,3,2];
+% Bits as values
+SymbolBitValues = [0,1,3,2];
+% Bits corresponding to symbols in a vector (used for decoder map)
+SymbolBitVector = [0, 0, 0, 1, 1, 1, 1, 0];
+
+%--------------------------------------------------
+
 
 % Small data set
 SymbolBits = [0, 0, 1, 1, 1, 0, 0, 1];
@@ -40,6 +46,7 @@ disp('Ratio of ones / zeros = ');
 disp(NumberOfOnes / NumberOfRandomBits);
 
 % Plot the constellation
+subplot(1,1,1);
 plot(Symbols, 'r+');
 grid on;
 axis([-2 2 -2 2]);
@@ -48,9 +55,11 @@ ylabel('Imaginary');
 title('Symbol Constellation');
 print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
-[ak, bk] = encoder(SymbolBits, Symbols, SymbolBitMap, BitsPerSymbol);
+[ak, bk] = encoder(SymbolBits, Symbols, SymbolBitValues, BitsPerSymbol);
 [ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
+subplot(1,1,1);
 plot(t, ModulatedSymbolBits);
+grid on;
 xlabel('time');
 ylabel('s_M(t)');
 title('Modulated small data set in time domain');
@@ -58,17 +67,26 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png'
 
 
 % Modulate the RandomBits data set
-[ak, bk] = encoder(RandomBits, Symbols, SymbolBitMap, BitsPerSymbol);
+[ak, bk] = encoder(RandomBits, Symbols, SymbolBitValues, BitsPerSymbol);
 [ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
 N = length(ModulatedRandomBits);
-FFTResult = fft(ModulatedRandomBits) / N;
-FreqResp = abs(fftshift(FFTResult));
-
+FFTResult = fftshift(fft(ModulatedRandomBits) / N);
+FreqResp = abs(FFTResult);
+PhaseResp = angle(FFTResult);
 % Fix the fft result so the we have negative frequencies on the left
 frequencies = f_s / N * [-N/2 : N/2-1];
 
+subplot(2,1,1);
 plot(frequencies, FreqResp);
+grid on;
 xlabel('frequency');
 ylabel('|S_M(f)|');
-title('Modulated random data set in frequency domain');
+title('Magnitude of Modulated random data set in frequency domain');
+
+subplot(2,1,2);
+plot(frequencies, PhaseResp);
+grid on;
+xlabel('frequency');
+ylabel('|S_M(f)|');
+title('Phase of Modulated random data set in frequency domain');
 print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft.png');
