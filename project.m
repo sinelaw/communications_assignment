@@ -60,11 +60,11 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png'
 % Modulate the RandomBits data set
 [ak, bk] = encoder(RandomBits, Symbols, SymbolBitMap, BitsPerSymbol);
 [ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
-FFTFreqResp = abs(fft(ModulatedRandomBits));
+FFTResult = fft(ModulatedRandomBits) / length(ModulatedRandomBits);
+FreqResp = abs(fftshift(FFTResult));
 
 % Fix the fft result so the we have negative frequencies on the left
 frequencies = f_s / length(ModulatedRandomBits) * [-length(ModulatedRandomBits)/2 : length(ModulatedRandomBits)/2-1];
-FreqResp = [FFTFreqResp(length(FFTFreqResp)/2:end) ,  FFTFreqResp(1:length(FFTFreqResp)/2-1)];
 
 plot(frequencies, FreqResp);
 xlabel('frequency');
