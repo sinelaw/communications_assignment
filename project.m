@@ -9,7 +9,7 @@ Bch = 800;
 f_c = 20*10^3;% carrier frequency
 omega_c = 2*pi*f_c; 
 
-f_s = 4*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
+f_s = 8*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
 P_c = 10; % transmission power
 A_c = sqrt(2*P_c); % transmission amplitude
 
@@ -98,4 +98,44 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft
 % Decide and decode
 DecodedBits = decoder(MLLDecision([q_i, q_q]', Symbols),Symbols,SymbolBitVector);
 
+display('The decoded bits are:');
 DecodedBits
+
+% Show the transmit filter output
+[s_di, s_dq ,t] = transmit_filter(ak, bk, Ts, f_s);
+subplot(2,1,1);
+plot(t, s_di);
+grid on;
+xlabel('time');
+ylabel('s_d_i(t)');
+title('In-phase component of transmit filter output');
+subplot(2,1,2);
+grid on;
+plot(t, s_dq);
+ylabel('s_d_q(t)');
+title('Quadrature component of transmit filter output');
+print('-dpng', '~/study/university/semester7/diccom/transmit_filter_output.png');
+
+
+% Show the output of the matched filter
+subplot(2,1,1);
+stem(q_i);
+grid on;
+set(gca, 'XTick', [1:length(q_i)]);
+set(gca, 'YTick', [-1 -1/sqrt(2) 0 1/sqrt(2) 1]);
+set(gca, 'YTickLabel', {'-1','-1/sqrt(2)','0','1/sqrt(2)','1'});
+xlabel('k (Symbol number)');
+ylabel('q_k^i');
+axis([0 length(q_i)+1 -1 1]);
+title('Sampled in-phase component of match filter output');
+subplot(2,1,2);
+stem(q_q);
+grid on;
+set(gca, 'XTick', [1:length(q_q)]);
+set(gca, 'YTick', [-1 -1/sqrt(2) 0 1/sqrt(2) 1]);
+set(gca, 'YTickLabel', {'-1','-1/sqrt(2)','0','1/sqrt(2)','1'});
+xlabel('k (Symbol number)');
+ylabel('q_k^q');
+axis([0 length(q_i)+1 -1 1]);
+title('Sampled quadrature component of match filter output');
+print('-dpng', '~/study/university/semester7/diccom/sampled_matched_filter_output.png');

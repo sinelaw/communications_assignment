@@ -69,23 +69,23 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   \end{figure}
   When there is no noise in the channel, and with ideal synchronization the demodulated signal is:
     \begin{eqnarray*}
-      x_{d_i}(t) &=& x(t)A_c cos(\omega_c t) \\
-                &=& A_c\sqrt{2P_r} cos(\omega_c t + \phi_K) cos(\omega_c t) \\
-                &=& A_c\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right] \\
-      x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) \\
-                &=& A_c\sqrt{\frac{P_r}{2}} \left[ sin(\phi_k) + sin(2\omega_c t + \phi) \right] 
+      x_{d_i}(t) &=& x(t)A_0 cos(\omega_c t) \\
+                &=& A_0\sqrt{2P_r} cos(\omega_c t + \phi_K) cos(\omega_c t) \\
+                &=& A_0\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right] \\
+      x_{d_q}(t) &=& -x(t)A_0 sin(\omega_c t) \\
+                &=& A_0\sqrt{\frac{P_r}{2}} \left[ sin(\phi_k) + sin(2\omega_c t + \phi) \right] 
     \end{eqnarray*}
   If $x_{d_i}(t)$ for example passes through the appropriate matched filter, the output is:
   \begin{eqnarray*}
     q_{k_i} &=& \int_{kT_s}^{(k+1)T_s}{ x_{d_i}(t) g(t-kT_s) dt} \\
-           &=&  \int_{kT_s}^{(k+1)T_s}{ A_c\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right]  dt} \\
-           &=&  A_c\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
+           &=&  \int_{kT_s}^{(k+1)T_s}{ A_0\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right]  dt} \\
+           &=&  A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
   \end{eqnarray*}
   If $R_s \to m (2f_c)$ where $m \in \mathbb{N}$, the integral goes to zero, and we are left with:
   \begin{equation*}
-    q_{k_i} = A_c\sqrt{\frac{P_r}{2}} T_s cos(\phi_k)
+    q_{k_i} = A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k)
   \end{equation*}
-  The conclusion is that to restore the amplitude of $q_{k_i}$ to the original (transmitted) value, we must multiply by $2 R_s$. To restore the value that entered the transmit filter, we must also divide by $A_c=\sqrt{2P_c}$. Equivalently to the two operations, we can simply multiply $q_{k_i}$ by the factor $R_s / \sqrt{P_c} = \frac{2}{A_c T_s}$.
+  The conclusion is that to restore the amplitude of $q_{k_i}$ to the original (transmitted) value, we must multiply by $2 R_s$. To restore the value that entered the transmit filter, we must also divide by $A_c=\sqrt{2P_c}$. Equivalently to the two operations, we can simply multiply $q_{k_i}$ by the factor $R_s / \sqrt{P_c} = \frac{2}{A_c T_s} = A_0$.
 
 \item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{log_2M}$ and $K_b=log_2M$.
 

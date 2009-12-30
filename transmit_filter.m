@@ -1,9 +1,5 @@
-function [ s_M, t ] = modulate( ak, bk, Ts, omega_c, phi_0 , A_c, SamplesPerSecond)
-%modulate Modulates using (cos, -sin) basis the encoded input vector (Ak = ak + j bk)
-%   Modulates the symbols (ak + jbk), with a time resolution of dt
-%     omega_c = carrier frequency
-%     phi_0   = carrier constant phase
-%     A_c     = carrier amplitude
+function [ s_di, s_dq , t] = transmit_filter( ak, bk, Ts, SamplesPerSecond)
+%transmit_filter
 
 NumberOfSymbols = length(ak);
 dt = 1 / SamplesPerSecond;
@@ -11,7 +7,8 @@ dt = 1 / SamplesPerSecond;
 % Pre-allocate arrays for better performance
 % using round to prevent matlab warning about non-integers (although the
 % result must be an integer)
-s_M = zeros(1,round(Ts*NumberOfSymbols*SamplesPerSecond));
+s_di = zeros(1,round(Ts*NumberOfSymbols*SamplesPerSecond));
+s_dq = zeros(1,round(Ts*NumberOfSymbols*SamplesPerSecond));
 t = 0:dt:Ts*NumberOfSymbols; % calculate time sample values
 t(:,end) = []; % Erase last time value (belongs to next symbol)
 
@@ -26,10 +23,11 @@ for i = 1:NumberOfSymbols
     upper_bound = floor(i*Ts*SamplesPerSecond);
     
     TimeInterval = t(1,lower_bound:upper_bound);
-    samples = A_c * ( a*cos(omega_c * TimeInterval + phi_0) - b*sin(omega_c * TimeInterval + phi_0));
+    s_di_interval = a*ones(length(TimeInterval),1);
+    s_dq_interval = b*ones(length(TimeInterval),1);
     % Write the samples into big array
-    s_M(1,lower_bound:upper_bound) = samples;
+    s_di(1,lower_bound:upper_bound) = s_di_interval;
+    s_dq(1,lower_bound:upper_bound) = s_dq_interval;
 end
 
 end
-
