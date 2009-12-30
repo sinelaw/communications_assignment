@@ -25,8 +25,8 @@ for i = 1:NumberOfSymbols
     lower_bound = round((i-1)*Ts*SamplesPerSecond+1);
     upper_bound = round(i*Ts*SamplesPerSecond);
     
-    SymbolTimes = t(1,lower_bound:upper_bound);
-    samples = A_c * ( a*cos(omega_c * SymbolTimes + phi_0) - b*sin(omega_c * SymbolTimes + phi_0));
+    TimeInterval = t(1,lower_bound:upper_bound);
+    samples = A_c * ( a*cos(omega_c * TimeInterval + phi_0) - b*sin(omega_c * TimeInterval + phi_0));
     % Write the samples into big array
     s_M(1,lower_bound:upper_bound) = samples;
 end

@@ -1,5 +1,5 @@
 %%% Local Variables: 
-%%% mode: latex
+%%% mode: pdflatex
 %%% TeX-master: t
 %%% End: 
 
@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{Project in Digital Communication Systems}
-\author{Noam Lewis}
+\author{Noam Lewis, Zvulun Avramov}
 
 \maketitle
 
@@ -43,7 +43,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   Where  $A_n=A_{n_i}+jA_{n_q}=|A_n|e^{j\phi_n}=e^{j\phi_n}$.
   In the case of $t \in K T_s$, where $K \in \mathbb{Z}$, we can use the fact that $\forall t \notin n T_s : g(t-n T_s)=0$, and $1$ otherwise to arrive at:
   \begin{eqnarray*}
-    s_M(t \in K T_s) &=& \sqrt{2P_c} cos(\omega_c t - \phi_K) \\
+    s_M(t \in K T_s) &=& \sqrt{2P_c} cos(\omega_c t + \phi_K) \\
                      &=& \sqrt{2P_c} \left[ cos(\phi_K)cos(\omega_c t) - sin(\phi_K)sin(\omega_c t) \right] \\
                      &=& \sqrt{2P_c} \left[ A_{K_i}cos(\omega_c t) - A_{K_q}sin(\omega_c t) \right] 
   \end{eqnarray*}
@@ -67,6 +67,25 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \caption{$S_M(f)$ for $R_s=T_s^{-1}=10,f_c=100$}
     \label{fig:S_M(f)}
   \end{figure}
+  When there is no noise in the channel, and with ideal synchronization the demodulated signal is:
+    \begin{eqnarray*}
+      x_{d_i}(t) &=& x(t)A_c cos(\omega_c t) \\
+                &=& A_c\sqrt{2P_r} cos(\omega_c t + \phi_K) cos(\omega_c t) \\
+                &=& A_c\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right] \\
+      x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) \\
+                &=& A_c\sqrt{\frac{P_r}{2}} \left[ sin(\phi_k) + sin(2\omega_c t + \phi) \right] 
+    \end{eqnarray*}
+  If $x_{d_i}(t)$ for example passes through the appropriate matched filter, the output is:
+  \begin{eqnarray*}
+    q_{k_i} &=& \int_{kT_s}^{(k+1)T_s}{ x_{d_i}(t) g(t-kT_s) dt} \\
+           &=&  \int_{kT_s}^{(k+1)T_s}{ A_c\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right]  dt} \\
+           &=&  A_c\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
+  \end{eqnarray*}
+  If $R_s \to m (2f_c)$ where $m \in \mathbb{N}$, the integral goes to zero, and we are left with:
+  \begin{equation*}
+    q_{k_i} = A_c\sqrt{\frac{P_r}{2}} T_s cos(\phi_k)
+  \end{equation*}
+  The conclusion is that to restore the amplitude of $q_{k_i}$ to the original (transmitted) value, we must multiply by $2 R_s$. To restore the value that entered the transmit filter, we must also divide by $A_c=\sqrt{2P_c}$. Equivalently to the two operations, we can simply multiply $q_{k_i}$ by the factor $R_s / \sqrt{P_c} = \frac{2}{A_c T_s}$.
 
 \item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{log_2M}$ and $K_b=log_2M$.
 
@@ -138,14 +157,14 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   \item Phase and Frequency shift - after demodulation (separately for the two bases), we get:
     \begin{eqnarray*}
       x_{d_i}(t) &=& x(t)A_c cos(\omega_c t) \\
-                &=& A_c\sqrt{2P_r} cos(\omega_r t - \phi_K + \Psi) cos(\omega_c t) + A_c cos(\omega_c t) n_r(t)\\
-                &=& A_c\sqrt{\frac{P_r}{2}} cos(\phi_k + \Delta \omega + \Psi) 
+                &=& A_c\sqrt{2P_r} cos(\omega_r t + \phi_K + \Psi) cos(\omega_c t) + A_c cos(\omega_c t) n_r(t)\\
+                &=& A_c\sqrt{\frac{P_r}{2}} cos(\phi_k + \Psi + \Delta \omega t) 
                     + \underbrace{ \frac{A_c}{2} \left( n_{r_i}(t) + n_{r_q}(t) \right) }_{\mbox{additive noise component}} 
                     + \text{ Higher frequency components} \\
-      x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) = A_c\sqrt{\frac{P_r}{2}} sin(\phi_k + \Delta \omega + \Psi) + \text{ ... }
+      x_{d_q}(t) &=& -x(t)A_c sin(\omega_c t) = A_c\sqrt{\frac{P_r}{2}} sin(\phi_k + \Delta \omega t + \Psi) + \text{ ... }
     \end{eqnarray*}
-    Where $\Delta \omega = \omega_c - \omega_r$ is the frequency shift, and $\Psi$ is the phase shift. Since we are using 4-QAM, if the total shift nears $\pi/8$ the symbols may be confused, so a phase synchronizer is required.
-
+    Where $\Delta \omega = \omega_r - \omega_c$ is the frequency shift, and $\Psi$ is the phase shift. Since we are using 4-QAM, if the phase shift nears $\pi/8$ the symbols may be confused, so a phase synchronizer is required.
+    
   \end{enumerate}
 
   \item Definitions of $\text{SNR}_{bit}^{(DD)}$ and $\text{SNR}_{sym}^{(DD)}$: 

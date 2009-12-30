@@ -1,5 +1,5 @@
 
-NumberOfRandomSymbols = 5000;
+NumberOfRandomSymbols = 50;
 
 % Modulation parameters
 Rb = 800;
@@ -67,8 +67,8 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png'
 
 
 % Modulate the RandomBits data set
-[ak, bk] = encoder(RandomBits, Symbols, SymbolBitValues, BitsPerSymbol);
-[ModulatedRandomBits, t]= modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
+[akr, bkr] = encoder(RandomBits, Symbols, SymbolBitValues, BitsPerSymbol);
+[ModulatedRandomBits, t]= modulate(akr, bkr, Ts, omega_c, 0, A_c, f_s);
 N = length(ModulatedRandomBits);
 FFTResult = fftshift(fft(ModulatedRandomBits) / N);
 FreqResp = abs(FFTResult);
@@ -90,3 +90,12 @@ xlabel('frequency');
 ylabel('|S_M(f)|');
 title('Phase of Modulated random data set in frequency domain');
 print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft.png');
+
+%--------------------------------------------------------------------------
+% Demodulate and match
+[q_i, q_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
+
+% Decide and decode
+DecodedBits = decoder(MLLDecision([q_i, q_q]', Symbols),Symbols,SymbolBitVector);
+
+DecodedBits
