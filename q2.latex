@@ -1,45 +1,70 @@
 % GNUPLOT: LaTeX picture
 \setlength{\unitlength}{0.240900pt}
 \ifx\plotpoint\undefined\newsavebox{\plotpoint}\fi
-\sbox{\plotpoint}{\rule[-0.200pt]{0.400pt}{0.400pt}}%
 \begin{picture}(1500,900)(0,0)
 \sbox{\plotpoint}{\rule[-0.200pt]{0.400pt}{0.400pt}}%
+\multiput(271,131)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,131){\usebox{\plotpoint}}
 \put(271.0,131.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,131){\makebox(0,0)[r]{ 0}}
 \put(1430.0,131.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,235)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,235){\usebox{\plotpoint}}
 \put(271.0,235.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,235){\makebox(0,0)[r]{ 0.0001}}
 \put(1430.0,235.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,339)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,339){\usebox{\plotpoint}}
 \put(271.0,339.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,339){\makebox(0,0)[r]{ 0.0002}}
 \put(1430.0,339.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,443)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,443){\usebox{\plotpoint}}
 \put(271.0,443.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,443){\makebox(0,0)[r]{ 0.0003}}
 \put(1430.0,443.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,548)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,548){\usebox{\plotpoint}}
 \put(271.0,548.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,548){\makebox(0,0)[r]{ 0.0004}}
 \put(1430.0,548.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,652)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,652){\usebox{\plotpoint}}
 \put(271.0,652.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,652){\makebox(0,0)[r]{ 0.0005}}
 \put(1430.0,652.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,756)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,756){\usebox{\plotpoint}}
 \put(271.0,756.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,756){\makebox(0,0)[r]{ 0.0006}}
 \put(1430.0,756.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,860)(20.756,0.000){57}{\usebox{\plotpoint}}
+\put(1450,860){\usebox{\plotpoint}}
 \put(271.0,860.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
 \put(251,860){\makebox(0,0)[r]{ 0.0007}}
 \put(1430.0,860.0){\rule[-0.200pt]{4.818pt}{0.400pt}}
+\multiput(271,131)(0.000,20.756){36}{\usebox{\plotpoint}}
+\put(271,860){\usebox{\plotpoint}}
 \put(271.0,131.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
 \put(271,90){\makebox(0,0){ 19000}}
 \put(271.0,840.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
+\multiput(566,131)(0.000,20.756){36}{\usebox{\plotpoint}}
+\put(566,860){\usebox{\plotpoint}}
 \put(566.0,131.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
 \put(566,90){\makebox(0,0){ 19500}}
 \put(566.0,840.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
+\multiput(861,131)(0.000,20.756){36}{\usebox{\plotpoint}}
+\put(861,860){\usebox{\plotpoint}}
 \put(861.0,131.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
 \put(861,90){\makebox(0,0){ 20000}}
 \put(861.0,840.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
+\multiput(1155,131)(0.000,20.756){36}{\usebox{\plotpoint}}
+\put(1155,860){\usebox{\plotpoint}}
 \put(1155.0,131.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
 \put(1155,90){\makebox(0,0){ 20500}}
 \put(1155.0,840.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
+\multiput(1450,131)(0.000,20.756){36}{\usebox{\plotpoint}}
+\put(1450,860){\usebox{\plotpoint}}
 \put(1450.0,131.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
 \put(1450,90){\makebox(0,0){ 21000}}
 \put(1450.0,840.0){\rule[-0.200pt]{0.400pt}{4.818pt}}
@@ -52,12 +77,9 @@
 \put(860,29){\makebox(0,0){$f$}}
 \sbox{\plotpoint}{\rule[-0.400pt]{0.800pt}{0.800pt}}%
 \put(271,131){\usebox{\plotpoint}}
-\put(271.0,131.0){\rule[-0.400pt]{27.222pt}{0.800pt}}
-\put(385,131){\usebox{\plotpoint}}
-\put(385,131){\usebox{\plotpoint}}
 \put(468,129.84){\rule{0.241pt}{0.800pt}}
 \multiput(468.00,129.34)(0.500,1.000){2}{\rule{0.120pt}{0.800pt}}
-\put(385.0,131.0){\rule[-0.400pt]{19.995pt}{0.800pt}}
+\put(271.0,131.0){\rule[-0.400pt]{47.457pt}{0.800pt}}
 \put(572,129.84){\rule{0.241pt}{0.800pt}}
 \multiput(572.00,130.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
 \put(469.0,132.0){\rule[-0.400pt]{24.813pt}{0.800pt}}
@@ -305,30 +327,20 @@
 \multiput(846.34,770.00)(1.000,1.000){2}{\rule{0.800pt}{0.241pt}}
 \put(847.84,772){\rule{0.800pt}{0.482pt}}
 \multiput(847.34,772.00)(1.000,1.000){2}{\rule{0.800pt}{0.241pt}}
-\put(850,773.34){\rule{0.482pt}{0.800pt}}
-\multiput(850.00,772.34)(1.000,2.000){2}{\rule{0.241pt}{0.800pt}}
-\put(852,774.84){\rule{0.241pt}{0.800pt}}
-\multiput(852.00,774.34)(0.500,1.000){2}{\rule{0.120pt}{0.800pt}}
-\put(851.84,777){\rule{0.800pt}{0.482pt}}
-\multiput(851.34,777.00)(1.000,1.000){2}{\rule{0.800pt}{0.241pt}}
-\put(854,777.84){\rule{0.241pt}{0.800pt}}
-\multiput(854.00,777.34)(0.500,1.000){2}{\rule{0.120pt}{0.800pt}}
+\put(850,773.84){\rule{0.723pt}{0.800pt}}
+\multiput(850.00,772.34)(1.500,3.000){2}{\rule{0.361pt}{0.800pt}}
+\put(852.34,777){\rule{0.800pt}{0.723pt}}
+\multiput(851.34,777.00)(2.000,1.500){2}{\rule{0.800pt}{0.361pt}}
+\put(855,778.84){\rule{0.723pt}{0.800pt}}
+\multiput(855.00,778.34)(1.500,1.000){2}{\rule{0.361pt}{0.800pt}}
+\put(858,779.84){\rule{0.723pt}{0.800pt}}
+\multiput(858.00,779.34)(1.500,1.000){2}{\rule{0.361pt}{0.800pt}}
 \put(689.0,139.0){\usebox{\plotpoint}}
-\put(856,778.84){\rule{0.241pt}{0.800pt}}
-\multiput(856.00,778.34)(0.500,1.000){2}{\rule{0.120pt}{0.800pt}}
-\put(855.0,780.0){\usebox{\plotpoint}}
-\put(857,781){\usebox{\plotpoint}}
-\put(857.0,781.0){\usebox{\plotpoint}}
-\put(858.0,781.0){\usebox{\plotpoint}}
-\put(858.84,131){\rule{0.800pt}{156.826pt}}
-\multiput(858.34,456.50)(1.000,-325.500){2}{\rule{0.800pt}{78.413pt}}
-\put(858.0,782.0){\usebox{\plotpoint}}
-\put(861.0,131.0){\rule[-0.400pt]{0.800pt}{156.826pt}}
+\put(862,779.84){\rule{0.241pt}{0.800pt}}
+\multiput(862.00,780.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
 \put(861.0,782.0){\usebox{\plotpoint}}
-\put(863.0,781.0){\usebox{\plotpoint}}
-\put(864,778.84){\rule{0.241pt}{0.800pt}}
-\multiput(864.00,779.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
-\put(863.0,781.0){\usebox{\plotpoint}}
+\put(864,778.84){\rule{0.482pt}{0.800pt}}
+\multiput(864.00,779.34)(1.000,-1.000){2}{\rule{0.241pt}{0.800pt}}
 \put(866,777.84){\rule{0.241pt}{0.800pt}}
 \multiput(866.00,778.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
 \put(865.84,777){\rule{0.800pt}{0.482pt}}
@@ -561,7 +573,7 @@
 \multiput(1026.00,141.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
 \put(1027,139.84){\rule{0.241pt}{0.800pt}}
 \multiput(1027.00,140.34)(0.500,-1.000){2}{\rule{0.120pt}{0.800pt}}
-\put(865.0,780.0){\usebox{\plotpoint}}
+\put(863.0,781.0){\usebox{\plotpoint}}
 \put(1028.0,141.0){\usebox{\plotpoint}}
 \put(1029.0,140.0){\usebox{\plotpoint}}
 \put(1030,137.84){\rule{0.241pt}{0.800pt}}

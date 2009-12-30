@@ -2,11 +2,29 @@
 /* [ Created with wxMaxima version 0.8.2 ] */
 
 /* [wxMaxima: comment start ]
+wxMaxima 0.8.2 http://wxmaxima.sourceforge.net
+Maxima 5.17.1 http://maxima.sourceforge.net
+Using Lisp GNU Common Lisp (GCL) GCL 2.6.7 (aka GCL)
+Distributed under the GNU Public License. See the file COPYING.
+Dedicated to the memory of William Schelter.
+The function bug_report() provides bug reporting information.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+wxMaxima 0.8.2 http://wxmaxima.sourceforge.net
+Maxima 5.17.1 http://maxima.sourceforge.net
+Using Lisp GNU Common Lisp (GCL) GCL 2.6.7 (aka GCL)
+Distributed under the GNU Public License. See the file COPYING.
+Dedicated to the memory of William Schelter.
+The function bug_report() provides bug reporting information.
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
 Question 2
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-sinc(x):= if x=0 then 1 else sin(x)/x;
+sinc(x):= product(cos(x/(2^i)),i,1,13);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
@@ -14,7 +32,7 @@ f(x):=cabs( 10/400 * ( sinc(%pi*(1/400)*(x-20*10^3))^2+sinc(%pi*(1/400)*(x+20*10
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-plot2d([f(x)], [x,19e3,21e3], [gnuplot_term, latex], [axes, 'x], [xlabel, "$f$"], [ylabel, "$S_M(f)$"],
+plot2d([f(x)], [x,19e3,21e3], [gnuplot_term, latex],[gnuplot_preamble,"set grid linestyle 2"], [axes, 'x], [xlabel, "$f$"], [ylabel, "$S_M(f)$"],
  [gnuplot_out_file, "/home/noam/study/university/semester7/diccom/q2.latex"])$
 /* [wxMaxima: input   end   ] */
 
@@ -23,7 +41,7 @@ Question 3
    [wxMaxima: comment end   ] */
 
 /* [wxMaxima: input   start ] */
-wxplot2d([f(x)], [x,3,30])$
+example(prod);
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */
