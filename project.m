@@ -47,15 +47,18 @@ disp(NumberOfOnes / NumberOfRandomBits);
 
 % Plot the constellation
 subplot(1,1,1);
-plot(Symbols, 'r+');
+plot(Symbols, 'r+', 'MarkerSize',17);
 grid on;
 axis([-2 2 -2 2]);
+rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
+daspect([1,1,1]);
 xlabel('Real');
 ylabel('Imaginary');
 title('Symbol Constellation');
 print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
 [ak, bk] = encoder(SymbolBits, Symbols, SymbolBitValues, BitsPerSymbol);
+SmallDataSetSymbols = ak + 1j * bk;
 [ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
 subplot(1,1,1);
 plot(t, ModulatedSymbolBits);
@@ -93,10 +96,10 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft
 
 %--------------------------------------------------------------------------
 % Demodulate and match
-[q_i, q_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
+[qk_i, qk_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
 
 % Decide and decode
-DecodedBits = decoder(MLLDecision([q_i, q_q]', Symbols),Symbols,SymbolBitVector);
+DecodedBits = decoder(MLLDecision([qk_i, qk_q]', Symbols),Symbols,SymbolBitVector);
 
 display('The decoded bits are:');
 DecodedBits
@@ -119,23 +122,118 @@ print('-dpng', '~/study/university/semester7/diccom/transmit_filter_output.png')
 
 % Show the output of the matched filter
 subplot(2,1,1);
-stem(q_i);
+stem(qk_i);
 grid on;
-set(gca, 'XTick', [1:length(q_i)]);
+set(gca, 'XTick', [1:length(qk_i)]);
 set(gca, 'YTick', [-1 -1/sqrt(2) 0 1/sqrt(2) 1]);
 set(gca, 'YTickLabel', {'-1','-1/sqrt(2)','0','1/sqrt(2)','1'});
 xlabel('k (Symbol number)');
 ylabel('q_k^i');
-axis([0 length(q_i)+1 -1 1]);
+axis([0 length(qk_i)+1 -1 1]);
 title('Sampled in-phase component of match filter output');
 subplot(2,1,2);
-stem(q_q);
+stem(qk_q);
 grid on;
-set(gca, 'XTick', [1:length(q_q)]);
+set(gca, 'XTick', [1:length(qk_q)]);
 set(gca, 'YTick', [-1 -1/sqrt(2) 0 1/sqrt(2) 1]);
 set(gca, 'YTickLabel', {'-1','-1/sqrt(2)','0','1/sqrt(2)','1'});
 xlabel('k (Symbol number)');
 ylabel('q_k^q');
-axis([0 length(q_i)+1 -1 1]);
+axis([0 length(qk_q)+1 -1 1]);
 title('Sampled quadrature component of match filter output');
 print('-dpng', '~/study/university/semester7/diccom/sampled_matched_filter_output.png');
+
+
+% Show the matched filter outputs before sampling
+[q_i, q_q, t] = matched_demodulate_nosampling( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
+subplot(2,1,1);
+plot(t, q_i);
+grid on;
+xlabel('time');
+ylabel('q_i(t)');
+title('In-phase component of matched filter output');
+subplot(2,1,2);
+plot(t, q_q);
+grid on;
+ylabel('q_q(t)');
+title('Quadrature component of matched filter output');
+print('-dpng', '~/study/university/semester7/diccom/matched_filter_output.png');
+
+% 2 - no phase difference
+% Constellation of received symbols before decision device
+ReceivedSymbols = qk_i + 1j * qk_q;
+
+display('Received symbols:');
+display(ReceivedSymbols);
+
+display('Distance of received symbols from transmitted symbols:');
+display(arrayfun(@abs, SmallDataSetSymbols-ReceivedSymbols));
+
+subplot(1,1,1);
+plot(qk_i, qk_q, 'b*', 'MarkerSize', 14);
+rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
+daspect([1,1,1]);
+grid on;
+axis([-2 2 -2 2]);
+xlabel('Real');
+ylabel('Imaginary');
+title('Received Symbols Constellation');
+print('-dpng', '~/study/university/semester7/diccom/recv_symbol_constellation.png');
+
+
+% Compare constellations
+subplot(1,1,1);
+plot(real(Symbols), imag(Symbols), 'r+', qk_i, qk_q, 'b*', 'MarkerSize', 12);
+rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
+daspect([1,1,1]);
+grid on;
+axis([-2 2 -2 2]);
+xlabel('Real');
+ylabel('Imaginary');
+title('Transmitted and Received Symbols Constellation');
+print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation.png');
+
+
+
+% 3 - phase difference
+
+% Demodulate and match
+[qk3_i, qk3_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  pi/6, Ts, f_s);
+
+% Decide and decode
+DecodedBits3 = decoder(MLLDecision([qk3_i, qk3_q]', Symbols),Symbols,SymbolBitVector);
+
+
+% Constellation of received symbols before decision device
+ReceivedSymbols3 = qk3_i + 1j * qk3_q;
+
+display('Received symbols with phase difference pi/6:');
+display(ReceivedSymbols3);
+
+display('Distance of received symbols from transmitted symbols, with phase difference of pi/6:');
+display(arrayfun(@abs, SmallDataSetSymbols - ReceivedSymbols3));
+
+subplot(1,1,1);
+plot(qk3_i, qk3_q, 'b*', 'MarkerSize', 14);
+rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
+daspect([1,1,1]);
+grid on;
+axis([-2 2 -2 2]);
+xlabel('Real');
+ylabel('Imaginary');
+title('Received Symbols Constellation, for phase difference of pi/6');
+print('-dpng', '~/study/university/semester7/diccom/recv_symbol_constellation_phase.png');
+
+
+% Compare constellations
+subplot(1,1,1);
+plot(real(Symbols), imag(Symbols), 'r+', qk3_i, qk3_q, 'b*', 'MarkerSize', 12);
+rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
+daspect([1,1,1]);
+grid on;
+axis([-2 2 -2 2]);
+xlabel('Real');
+ylabel('Imaginary');
+title('Transmitted and Received Symbols Constellation with phase difference pi/6');
+print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation_phase.png');
+

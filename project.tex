@@ -61,7 +61,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     S_M(f) = \frac{P_c}{2R_s}\left[ sinc^2(\pi T_s(f-f_c)) + sinc^2(\pi T_s(f+f_c)) \right]
   \end{equation}
   The graph of $S_M(f)$ with example parameters is show in Figure \ref{fig:S_M(f)}.
-  \begin{figure}[H]
+  \begin{figure}[h!]
     \centering
     \input{q2.latex}
     \caption{$S_M(f)$ for $R_s=T_s^{-1}=10,f_c=100$}
@@ -77,22 +77,27 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \end{eqnarray*}
   If $x_{d_i}(t)$ for example passes through the appropriate matched filter, the output is:
   \begin{eqnarray*}
-    q_{k_i} &=& \int_{kT_s}^{(k+1)T_s}{ x_{d_i}(t) g(t-kT_s) dt} \\
+    a_{k_i} &=& \int_{kT_s}^{(k+1)T_s}{ x_{d_i}(t) g(t-kT_s) dt} \\
            &=&  \int_{kT_s}^{(k+1)T_s}{ A_0\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right]  dt} \\
            &=&  A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
   \end{eqnarray*}
   If $R_s \to m (2f_c)$ where $m \in \mathbb{N}$, the integral goes to zero, and we are left with:
-  \begin{equation*}
-    q_{k_i} = A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k)
-  \end{equation*}
-  The conclusion is that to restore the amplitude of $q_{k_i}$ to the original (transmitted) value, we must multiply by $2 R_s$. To restore the value that entered the transmit filter, we must also divide by $A_c=\sqrt{2P_c}$. Equivalently to the two operations, we can simply multiply $q_{k_i}$ by the factor $R_s / \sqrt{P_c} = \frac{2}{A_c T_s} = A_0$.
+  \begin{eqnarray*}
+    a_{k_i} &=& A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) = \frac{\sqrt{P_r} A_{k_i}}{R_s} \\
+    a_{k_q} &=& A_0\sqrt{\frac{P_r}{2}} T_s sin(\phi_k) = \frac{\sqrt{P_r} A_{k_q}}{R_s}
+  \end{eqnarray*}
+  Where the right hand sides result from choosing $A_0=\sqrt{2}$. Combining the components gives:
+  \begin{equation}
+    \label{eq:a_k}
+    a_k = a_{k_i} + j a_{k_q} = \frac{\sqrt{P_r}}{R_s} A_k
+  \end{equation}
 
 \item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{log_2M}$ and $K_b=log_2M$.
 
 \item In Gray coding, every two consequetive numbers differ by exactly one bit. The encoding reduces BER by assigning similar codes to closer symbols. The probability of receiving a symbol in close vicinity to the transmitted one is higher, so errors with small number of bit flips are more probable. In our case (where $M=4$) we can assign:
 
   \begin{center}
-    \begin{table}
+    \begin{table}[h!]
       \centering
       \begin{tabular}[h!]{| l | l | l |}
       \hline
@@ -109,7 +114,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   \end{center}
 
 \item The symbol constellation is shown in Figure \ref{fig:4qam-const}. 
-  \begin{figure}[H]
+  \begin{figure}[h!]
     \begin{center}
       \begin{tikzpicture}[scale=3]
         % Circles 
@@ -179,11 +184,34 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \begin{equation*}
       P_{err,sym}^{(DD)} = \sum_{m=1}^M {p_m P(\text{error} | A_m)} = \sum_{m=1}^M {p_m \left[ 1 - \prod_{n=1,n \neq m}^M \left( 1 - P(A_n | A_m) \right) \right]} 
     \end{equation*}
-    Where, if $d_{m,n}$ is the Euclidean distance between symbols $A_m$ and $A_n$:
+    Where, if $d_{m,n}= |A_m - A_n|$ is the Euclidean distance between symbols $A_m$ and $A_n$:
     \begin{equation*}
       P(A_n | A_m) = Q\left( \frac{d_{m,n}}{2 \sigma_z}\right)
     \end{equation*}
+    In our case, $d_{m,n} = \sqrt{2}$ for neighboring symbols, and $d_{m,n} = 2$ for the non-neighboring ones. Due to the nature of the $Q$ function we can safely discard the terms for the probabilities between non-neighboring symbols.
 
+    We want the probability expressed as a function of $\gamma_d$:
+    \begin{equation*}
+      \gamma_d = \frac{E_r}{N_0}
+    \end{equation*}
+    We can calculate $E_r$ as follows:
+    \begin{eqnarray*}
+      E_r &=& \int_0^{T_s}{s^2_r(t) dt} \\
+          &=& 2P_r \int_0^{T_s}{ \left[ A_{K_i}cos(\omega_c t) - A_{K_q}sin(\omega_c t) \right]^2 dt} \\
+          &=& 2P_r \int_0^{T_s}{ \left[ A_{K_i}^2cos^2(\omega_c t) + A_{K_q}^2sin^2(\omega_c t) - \frac{1}{2} A_{K_i} A_{K_q} sin(2\omega_c t) \right] dt} \\
+          && \{\text{Discarding higher-frequency components which would be filtered in the integration}\} \\
+          &=& P_r \int_0^{T_s}{ \left[ A_{K_i}^2 + A_{K_q}^2 \right] dt} \\
+          &=& \frac{P_r |A_{K}|^2}{R_s} = \frac{P_r}{R_s}
+    \end{eqnarray*}
+    Therefore,
+    \begin{equation*}
+      \gamma_d = \frac{P_r}{R_s N_0}
+    \end{equation*}
+    Using Equations \ref{eq:a_ki} \& \ref{eq:a_kq} from question 2, we can express the distance between nearby symbols as:
+    \begin{equation*}
+      bla
+    \end{equation*}
+ 
 \end{enumerate}
 
 \section{Simulation}
@@ -195,8 +223,14 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 \end{enumerate}
 
 \subsection{Transmitter}
+The chosen sampling frequency was $8 f_c$, so that:
+\begin{itemize}
+\item Nyquist's criterion is met ($2 f_c$ would suffice)
+\item Enough samples are shown in the Matlab graphs, to make the real amplitude visible.
+\end{itemize}
 
-The symbol/bit patterns appear in Table \ref{tab:bitsymbols}.
+The symbol/bit patterns appear in Table \ref{tab:bitsymbols}. The symbol constellation is shown in Figure \ref{fig:trans_constellation}.
+
 \begin{enumerate}
 \item $P_c = 10W$, therefore $A_c = \sqrt{20}$.
 \item $f_c = 20kHz$ so $w_c = 4\pi \cdot 10^4$.
@@ -205,10 +239,155 @@ The symbol/bit patterns appear in Table \ref{tab:bitsymbols}.
 
   \begin{figure}[h!]
     \centering
+    \includegraphics[height=4in]{symbol_constellation.png}
+    \caption{Constellation of symbols received}
+    \label{fig:trans_constellation}
+  \end{figure}
+
+The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The frequency response of the large (random) data set is show in Figure \ref{fig:S_M(f)}.
+
+  \begin{figure}[h!]
+    \centering
     \includegraphics[height=4in]{modulated_small_dataset.png}
     \caption{$s_M(t)$ for small data set}
     \label{fig:s_M(t)}
   \end{figure}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=4in]{modulated_random_dataset_fft.png}
+    \caption{$S_M(f)$ for large (random) data set}
+    \label{fig:S_M(f)}
+  \end{figure}
+
+\subsection{Receiver}
+\begin{enumerate}
+\item Time domain graphs of signals: outputs of transmit filters in Figure \ref{fig:s_d(t)}; outputs of matched filters in receiver in Figure \ref{fig:q(t)}. The transmit filter simply outputs a constant function of the symbol because we use a full-response pulse ($g(t) = 1\ \forall t \in Ts\ ,\ 0\ \text{otherwise}$). The matched filter produces an integral of the demodulated signal re-starting from 0 at every symbol interval. We can see that the peak of the integral corresponds to the end of the symbol interval, and is equal to the value of the symbol that was transmitted.
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=4in]{transmit_filter_output.png}
+    \caption{$s_{d_i}(t)$ and $s_{d_q}(t)$, outputs of the transmit filter (before modulation)}
+    \label{fig:s_d(t)}
+  \end{figure}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=4in]{matched_filter_output.png}
+    \caption{$q_i(t)$ and $q_q(t)$, sampled outputs of the matched filters (before decision device)}
+    \label{fig:q(t)}
+  \end{figure}
+
+\item Symbols: for constant phase - ideal synchronization between transmitter and receiver. Table \ref{tab:recvsymbols} shows the values of the symbols received from the matched filter (after sampling). Figure \ref{fig:recv_constellation} shows the received symbols as a constellation. A comparison of the transmitted symbols with the received ones shows that they are quite close, as can be seen in Figure \ref{fig:zoom_constellation}. The errors (difference) between distances of transmitted symbols to those received are shown in Table \ref{tab:dist_recvsymbols}. The errors are small, and are due to the inprecise integration method ('trapz' Matlab function, trapezoid integration) used in the simulation. In an ideal system there would be no error in this case. Mathematically, the distances are 0.
+
+
+  \begin{center}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}[h]{| l | l |}
+      \hline
+      k             &  Received Symbol  \\ \hline
+      1             &  0.7035 + 0.7053j \\ \hline
+      2             & -0.7035 - 0.7053j \\ \hline
+      3             &  0.7053 - 0.7071j \\ \hline
+      4             & -0.7053 + 0.7071j \\
+      \hline
+      \end{tabular}
+      \caption{Symbols received (sampled matched filter output)}
+      \label{tab:recvsymbols}
+    \end{table}
+  \end{center}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[height=4in]{recv_symbol_constellation.png}
+    \caption{Constellation of symbols received}
+    \label{fig:recv_constellation}
+  \end{figure}
+
+  \begin{center}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}[h]{| l | l |}
+      \hline
+      Symbol    &  Distance \\ \hline
+      $A_{r_1}$  &     0.0040 \\ \hline
+      $A_{r_2}$  &     0.0018 \\ \hline
+      $A_{r_3}$  &     0.0040 \\ \hline
+      $A_{r_4}$  &     0.0018 \\ 
+      \hline
+      \end{tabular}
+      \caption{Distances between symbols transmitted and those received}
+      \label{tab:dist_recvsymbols}
+    \end{table}
+  \end{center}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[height=4in]{trans_recv_constellation_zoom.png}
+    \caption{Zoom on the first symbol $A_1$ - showing the transmitted and received symbols. \newline The dotted line represents a portion of the unit circle.}
+    \label{fig:zoom_constellation}
+  \end{figure}
+
+
+
+\item Symbols: unsychronized phase channel - difference of $30^o$ between transmitted and received. Table \ref{tab:recvsymbols_phase} shows the values of the symbols received from the matched filter (after sampling). Figure \ref{fig:recv_constellation_phase} shows the received symbols as a constellation. A comparison of the transmitted symbols with the received ones shows that they are quite close, as can be seen in Figure \ref{fig:trans_recv_constellation_phase}. The distances between transmitted symbols to those received are shown in Table \ref{tab:dist_recvsymbols_phase}. The large errors are due to the phase difference between transmitter and receiver.
+
+
+  \begin{center}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}[h]{| l | l |}
+      \hline
+      k             &  Received Symbol  \\ \hline
+      1             &  0.7035 + 0.7053j \\ \hline
+      2             & -0.7035 - 0.7053j \\ \hline
+      3             &  0.7053 - 0.7071j \\ \hline
+      4             & -0.7053 + 0.7071j \\
+      \hline
+      \end{tabular}
+      \caption{Symbols received with phase difference of $pi/6$ (sampled matched filter output)}
+      \label{tab:recvsymbols_phase}
+    \end{table}
+  \end{center}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[height=4in]{recv_symbol_constellation_phase.png}
+    \caption{Constellation of symbols received with phase difference of $pi/6$}
+    \label{fig:recv_constellation_phase}
+  \end{figure}
+
+
+
+  \begin{center}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}[h]{| l | l |}
+      \hline
+      Symbol    &  Distance \\ \hline
+      $A_{r_1}$  &  0.5155   \\ \hline
+      $A_{r_2}$  &  0.5185   \\ \hline
+      $A_{r_3}$  &  0.5155   \\ \hline
+      $A_{r_4}$  &  0.5185   \\ 
+      \hline
+      \end{tabular}
+      \caption{Distances between symbols transmitted and those received with phase difference of $pi/6$}
+      \label{tab:dist_recvsymbols_phase}
+    \end{table}
+  \end{center}
+
+  \begin{figure}[h]
+    \centering
+    \includegraphics[height=4in]{trans_recv_constellation_phase.png}
+    \caption{Constellation of the transmitted and received symbols with phase difference of $pi/6$. \newline The dotted line represents the unit circle.}
+    \label{fig:trans_recv_constellation_phase}
+  \end{figure}
+
+
+
+
+\end{enumerate}
 
 
 \end{document}
