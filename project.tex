@@ -23,9 +23,9 @@
 
 \section{Answers to Preparatory Questions}
 
-We have selected modulation number 5, entailing digital input data, $R_b=800$, QAM, and $B_{ch}=800Hz$. Because $R_s=\frac{R_b}{log_2M}$, and the required bandwidth is $B_{min}=2R_s=800Hz$, we can calculate $M$:
+We have selected modulation number 5, entailing digital input data, $R_b=800$, QAM, and $B_{ch}=800Hz$. Because $R_s=\frac{R_b}{\log_2M}$, and the required bandwidth is $B_{min}=2R_s=800Hz$, we can calculate $M$:
 \begin{eqnarray*}
-  log_2M &=& \frac{R_b}{R_s} \\
+  \log_2M &=& \frac{R_b}{R_s} \\
   &=& \frac{2R_b}{B_{min}} \\
   &=& \frac{1600}{800} = 2
 \end{eqnarray*}
@@ -92,7 +92,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     a_k = a_{k_i} + j a_{k_q} = \frac{\sqrt{P_r}}{R_s} A_k
   \end{equation}
 
-\item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{log_2M}$ and $K_b=log_2M$.
+\item For a symbol dictionary of size $M$: $R_s=\frac{R_b}{\log_2M}$ and $K_b=\log_2M$.
 
 \item In Gray coding, every two consequetive numbers differ by exactly one bit. The encoding reduces BER by assigning similar codes to closer symbols. The probability of receiving a symbol in close vicinity to the transmitted one is higher, so errors with small number of bit flips are more probable. In our case (where $M=4$) we can assign:
 
@@ -173,12 +173,22 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   \end{enumerate}
 
   \item Definitions of $\text{SNR}_{bit}^{(DD)}$ and $\text{SNR}_{sym}^{(DD)}$: 
-    
+    \begin{eqnarray*}
+      \text{SNR}_{sym}^{(DD)} &=& \frac{E_s}{N_0} = \frac{P_rE_g}{N_0}\sum_{k=0}^{M-1}{p_k|A_k|^2 } \\
+      \text{SNR}_{bit}^{(DD)} &=& \frac{\text{SNR}_{sym}^{(DD)}}{\log_2(M)}
+    \end{eqnarray*}
+    In our case, $\forall k:|A_k|^2=1$, $E_g=T_s=1/R_s$, and $\log_2(M)=2$, and we assume uniform symbol distribution ($p_k=1/M$) so:
+    \begin{eqnarray*}
+      \text{SNR}_{sym}^{(DD)} &=& \frac{P_r}{R_sN_0}\\
+      \text{SNR}_{bit}^{(DD)} &=& \frac{P_r}{2R_sN_0}
+    \end{eqnarray*}
+
+
 \item $erfc(\lambda) = 2Q( \sqrt{2}\lambda )$, and $\frac{1}{2} erfc( \frac{\lambda}{\sqrt{2}} ) = Q(\lambda )$.
 
 \item Because we are using code gray, the following relation holds whenever the SNR is high enough to make transitions to far symbols unlikely:
     \begin{equation*}
-      P_{err,bit}^{(DD)} \approx \frac{P_{err,sym}^{(DD)}}{log_2{M}} = \frac{P_{err,sym}^{(DD)}}{2}
+      P_{err,bit}^{(DD)} \approx \frac{P_{err,sym}^{(DD)}}{\log_2{M}} = \frac{P_{err,sym}^{(DD)}}{2}
     \end{equation*}
     The probability for symbol error is defined by:
     \begin{equation*}
@@ -192,7 +202,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 
     We want the probability expressed as a function of $\gamma_d$:
     \begin{equation*}
-      \gamma_d = \frac{E_r}{N_0}
+      \gamma_d = \frac{E_r}{N_0} 
     \end{equation*}
     We can calculate $E_r$ as follows:
     \begin{eqnarray*}
@@ -227,12 +237,12 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
                  &=& \int_{-\infty}^{\infty}{ \frac{N_0}{2}  |H_{MF}(f)|^2 df} \\
                  &=& \frac{N_0}{2} \int_{-\infty}^{\infty}{  |H_{MF}(f)|^2 df} \\
                  && \{\text{Parseval's theorem}\} \\
-                 &=& \frac{N_0}{2} E_g
+                 &=& \frac{N_0}{2} E_g = \frac{N_0}{2R_s} 
     \end{eqnarray*}
 
     Thus,
     \begin{equation*}
-      \frac{d_{m,n}}{2\sigma_z} = \frac{\sqrt{2P_r}}{R_s} \frac{1}{2 \sqrt{\frac{N_0}{2} E_g} } = \frac{\sqrt{P_r}}{R_s} \frac{1}{\sqrt{N_0 T_s} } = \frac{\sqrt{P_rR_s}}{R_s\sqrt{N_0 }} = \sqrt{\frac{P_r}{R_s N_0 }} = \sqrt{\gamma_d}
+      \frac{d_{m,n}}{2\sigma_z} = \frac{\sqrt{2P_r}}{R_s} \frac{1}{2 \sqrt{\frac{N_0}{2R_s}} }  = \frac{\sqrt{P_rR_s}}{R_s\sqrt{N_0 }} = \sqrt{\frac{P_r}{R_s N_0 }} = \sqrt{\gamma_d}
     \end{equation*}
     Finally,
     \begin{eqnarray*}
@@ -246,6 +256,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \end{equation}
     Inverting the expression, we get:
     \begin{equation}
+      \label{eq:invP_errsym}
       \gamma_d = 2 \left({\mathrm{erfc}^{-1}}(P_{err,sym}^{(DD)}) \right)^2
     \end{equation}
     Thus, in Matlab, given symbol error probability $p$, we can calculate $\gamma_d$ as follows:
@@ -255,7 +266,11 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \begin{lstlisting}[label=lst:matlab_perr]{}
       gamma_d = 2*(erfcinv(p))^2
     \end{lstlisting}
- 
+    For convenience we also find the relation between the noise variance and $\gamma_d$:
+    \begin{equation} 
+      \sigma_z^2 = \frac{N_0^2}{2P_r} \gamma_d
+    \end{equation}
+
 \end{enumerate}
 
 \section{Simulation}
@@ -263,7 +278,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 \subsection{Data sets}
 \begin{enumerate}
 \item Small data set - the bit sequence: $\{0,0,1,1,1,0,0,1\}$, which corresponds to the sequence $\{A_1, A_3, A_4, A_2\}$.
-\item Large (random) data set - a random stream of $5^3 log_2M = 10^3$ bits. The data set was created by applying the function $f(x) = \text{\bf{ if }} x>0.5 \text{\bf{ then }} 1 \text{\bf{ else }} 0$ to each element of a vector constructed with the Matlab 'rand' function.
+\item Large (random) data set - a random stream of $5^3 \log_2M = 10^3$ bits. The data set was created by applying the function $f(x) = \text{\bf{ if }} x>0.5 \text{\bf{ then }} 1 \text{\bf{ else }} 0$ to each element of a vector constructed with the Matlab 'rand' function.
 \end{enumerate}
 
 \subsection{Transmitter}
@@ -304,7 +319,7 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
     \label{fig:S_M(f)}
   \end{figure}
 
-\subsection{Receiver}
+\subsection{Receiver, no noise}
 \begin{enumerate}
 \item Time domain graphs of signals: outputs of transmit filters in Figure \ref{fig:s_d(t)}; outputs of matched filters in receiver in Figure \ref{fig:q(t)}. The transmit filter simply outputs a constant function of the symbol because we use a full-response pulse ($g(t) = 1\ \forall t \in Ts\ ,\ 0\ \text{otherwise}$). The matched filter produces an integral of the demodulated signal re-starting from 0 at every symbol interval. We can see that the peak of the integral corresponds to the end of the symbol interval, and is equal to the value of the symbol that was transmitted.
 
@@ -428,10 +443,15 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
     \label{fig:trans_recv_constellation_phase}
   \end{figure}
 
-
-
-
 \end{enumerate}
+
+\subsection{Receiver, with noise}
+Using Matlab and the definition in Equation \ref{eq:invP_errsym}, we calculate: 
+\begin{itemize}
+\item $p_{err}=10^{-3} \Rightarrow \gamma_{d_{max}} = 10.8276$
+\item $p_{err}=0.2 \Rightarrow \gamma_{d_{max}} = 1.6424$
+\end{itemize}
+
 
 
 \end{document}
