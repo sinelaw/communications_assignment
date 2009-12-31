@@ -12,7 +12,7 @@
 \usepackage{float}
 \usepackage{tikz}
 \usepackage{euler}                                %Nicer numbers
-
+\usepackage{listings}
 
 \begin{document}
 
@@ -174,7 +174,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 
   \item Definitions of $\text{SNR}_{bit}^{(DD)}$ and $\text{SNR}_{sym}^{(DD)}$: 
     
-\item $erfc(\lambda) = 2Q( \sqrt{2}\lambda )$.
+\item $erfc(\lambda) = 2Q( \sqrt{2}\lambda )$, and $\frac{1}{2} erfc( \frac{\lambda}{\sqrt{2}} ) = Q(\lambda )$.
 
 \item Because we are using code gray, the following relation holds whenever the SNR is high enough to make transitions to far symbols unlikely:
     \begin{equation*}
@@ -242,8 +242,19 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     Discarding higher-order Q's (including the ones for the non-neighboring symbols), and also assuming uniform symbol distribution ($p_m=1/4$), we arrive at:
     \begin{equation}
       \label{eq:P_errsym}
-      P_{err,sym}^{(DD)} = 2Q\left( \sqrt{\gamma_d}\right) 
+      P_{err,sym}^{(DD)} = 2Q\left( \sqrt{\gamma_d}\right) = \mathrm{erfc}(\sqrt{\gamma_d / 2})
     \end{equation}
+    Inverting the expression, we get:
+    \begin{equation}
+      \gamma_d = 2 \left({\mathrm{erfc}^{-1}}(P_{err,sym}^{(DD)}) \right)^2
+    \end{equation}
+    Thus, in Matlab, given symbol error probability $p$, we can calculate $\gamma_d$ as follows:
+    \lstset{language=matlab}
+    \lstset{keywordstyle=\bfseries}
+    \lstset{morekeywords={erfcinv}}
+    \begin{lstlisting}[label=lst:matlab_perr]{}
+      gamma_d = 2*(erfcinv(p))^2
+    \end{lstlisting}
  
 \end{enumerate}
 
