@@ -207,10 +207,43 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \begin{equation*}
       \gamma_d = \frac{P_r}{R_s N_0}
     \end{equation*}
-    Using Equations \ref{eq:a_ki} \& \ref{eq:a_kq} from question 2, we can express the distance between nearby symbols as:
+    Using Equation \ref{eq:a_k} from question 2, we can express the distance between nearby symbols as:
     \begin{equation*}
-      bla
+      d_{m,n} = | \frac{\sqrt{P_r}}{R_s} (A_m - A_n) | = \frac{\sqrt{P_r}}{R_s} |A_m - A_n|
     \end{equation*}
+    In our case for neighboring symbols $|A_m - A_n|=\sqrt{2}$ so:
+    \begin{equation*}
+      d_{m,n} = \frac{\sqrt{2P_r}}{R_s}
+    \end{equation*}
+    To find $\sigma_z$ we calculate the noise component output from the matched filter:
+    \begin{eqnarray*}
+      z_k &=& \int_{kT_s}^{(k+1)T_s}{ n_r(t) A_0 cos(\omega_c t) g(t-kT_s) dt} \\
+          && \{\text{Discarding higher-frequency components}\} \\
+          &=& \frac{A_0}{2} \int_{kT_s}^{(k+1)T_s}{ n_{r_i}(t) dt} 
+    \end{eqnarray*}
+    Assuming Gaussian white noise, because the integral (the matched filter) is a linear system we can calculate the variance (the power) as:
+    \begin{eqnarray*} 
+      \sigma_z^2 &=& \int_{-\infty}^{\infty}{ S_{n_i}(f) |H_{MF}(f)|^2 df} \\
+                 &=& \int_{-\infty}^{\infty}{ \frac{N_0}{2}  |H_{MF}(f)|^2 df} \\
+                 &=& \frac{N_0}{2} \int_{-\infty}^{\infty}{  |H_{MF}(f)|^2 df} \\
+                 && \{\text{Parseval's theorem}\} \\
+                 &=& \frac{N_0}{2} E_g
+    \end{eqnarray*}
+
+    Thus,
+    \begin{equation*}
+      \frac{d_{m,n}}{2\sigma_z} = \frac{\sqrt{2P_r}}{R_s} \frac{1}{2 \sqrt{\frac{N_0}{2} E_g} } = \frac{\sqrt{P_r}}{R_s} \frac{1}{\sqrt{N_0 T_s} } = \frac{\sqrt{P_rR_s}}{R_s\sqrt{N_0 }} = \sqrt{\frac{P_r}{R_s N_0 }} = \sqrt{\gamma_d}
+    \end{equation*}
+    Finally,
+    \begin{eqnarray*}
+      P(A_n | A_m) &=& Q\left( \sqrt{\gamma_d}\right) \nonumber \\
+      P_{err,sym}^{(DD)} &=& \sum_{m=1}^4 {p_m \left[ 1 - \prod_{n=1,n \neq m}^4 \left( 1 - Q\left( \sqrt{\gamma_d}\right) \right) \right]}
+    \end{eqnarray*}
+    Discarding higher-order Q's (including the ones for the non-neighboring symbols), and also assuming uniform symbol distribution ($p_m=1/4$), we arrive at:
+    \begin{equation}
+      \label{eq:P_errsym}
+      P_{err,sym}^{(DD)} = 2Q\left( \sqrt{\gamma_d}\right) 
+    \end{equation}
  
 \end{enumerate}
 
@@ -218,7 +251,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 
 \subsection{Data sets}
 \begin{enumerate}
-\item Small data set - one of each bit pattern: $\{00, 01, 11, 10\}$.
+\item Small data set - the bit sequence: $\{0,0,1,1,1,0,0,1\}$, which corresponds to the sequence $\{A_1, A_3, A_4, A_2\}$.
 \item Large (random) data set - a random stream of $5^3 log_2M = 10^3$ bits. The data set was created by applying the function $f(x) = \text{\bf{ if }} x>0.5 \text{\bf{ then }} 1 \text{\bf{ else }} 0$ to each element of a vector constructed with the Matlab 'rand' function.
 \end{enumerate}
 
