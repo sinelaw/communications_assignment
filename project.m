@@ -241,26 +241,29 @@ print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellat
 % Channel with noise
 %----------------------------------
 % We want the noise centered at fc = 20khz (40pi*10^3 rad/sec)
-% and with a bandwith of Bch = 800hz, so f1 = 19.2khz, f2 = 20.8khz.
+% and with a bandwith of Bch = 800hz, so f1 = 19.6khz, f2 = 20.4khz.
 % The sampling frequency is fs = 8fc.
 % The filter accepts the bandwith values as factors of fs/2 (for a value of 1 we get fs/2, 0.5 -> fs/4,
 % etc.)
 % In our case fs/2 = 4fc = 1 [normalized], so f / 4fc = [normalized value]
-%   f1 = 19.2 / 80 = 0.24,  f2 = 20.8 / 80 = 0.26
+
+f1 = 19.6 / 80;
+f2 = 20.4 / 80;
 
 
-gamma_d_max = 2*erfcinv(1e-3)^2
-gamma_d_min = 2*erfcinv(0.2)^2
+gamma_d_max = 10*log10( 2*erfcinv(1e-3)^2 );
+gamma_d_min = 10*log10( 2*erfcinv(0.2)^2 );
 
 gamma_d_vec = gamma_d_min : 2 : gamma_d_max
 
-NoiseVariances = N_0 * Bch
+P_r = P_c;
+NoiseVariances = P_r ./ (10.^(gamma_d_vec./10));
 
-ChannelWindowFreqs = [0.24,0.26]
-ChannelWindowFilter = fir1(100,ChannelWindowFreqs)
+ChannelWindowFreqs = [f1,f2];
+ChannelWindowFilter = fir1(100,ChannelWindowFreqs);
 
 % The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
-NoiseSamples = filter(ChannelWindowFreqs, 1, randn(1, length(ModulatedRandomBits)))
+NoiseSamples = filter(ChannelWindowFilter, 1, randn(1, length(ModulatedRandomBits)));
 
-ReceivedSignal = ModulatedRandomBits + NoiseSamples
+ReceivedSignal = ModulatedRandomBits + NoiseSamples;
 
