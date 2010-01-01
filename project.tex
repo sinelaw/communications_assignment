@@ -388,7 +388,7 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 
   \begin{figure}[h]
     \centering
-    \includegraphics[height=4in]{trans_recv_constellation_zoom.png}
+    \includegraphics[height=4in]{trans_recv_symbol_constellation.png}
     \caption{Zoom on the first symbol $A_1$ - showing the transmitted and received symbols. \newline The dotted line represents a portion of the unit circle.}
     \label{fig:zoom_constellation}
   \end{figure}
@@ -443,7 +443,7 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 
   \begin{figure}[h]
     \centering
-    \includegraphics[height=4in]{trans_recv_constellation_phase.png}
+    \includegraphics[height=4in]{trans_recv_symbol_constellation_phase.png}
     \caption{Constellation of the transmitted and received symbols with phase difference of $pi/6$. \newline The dotted line represents the unit circle.}
     \label{fig:trans_recv_constellation_phase}
   \end{figure}
@@ -453,8 +453,8 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 \subsection{Receiver, with noise}
 Using Matlab and the definition in Equation \ref{eq:invP_errsym}, we calculate: 
 \begin{itemize}
-\item $p_{err}=10^{-3} \Rightarrow \gamma_{d_{max}} = 10.8276$
-\item $p_{err}=0.2 \Rightarrow \gamma_{d_{max}} = 1.6424$
+\item $p_{err}=10^{-3} \Rightarrow \gamma_{d_{max}} = 10.8276 = 3.3339 \mathrm{[dB]} $
+\item $p_{err}=0.2 \Rightarrow \gamma_{d_{max}} = 1.6424 = 10.1474 \mathrm{[dB]}$
 \end{itemize}
 
 To produce bandlimited gaussian white noise in Matlab, we:

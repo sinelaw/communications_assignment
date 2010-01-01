@@ -49,7 +49,7 @@ disp(NumberOfOnes / NumberOfRandomBits);
 subplot(1,1,1);
 plot(Symbols, 'r+', 'MarkerSize',17);
 grid on;
-axis([-2 2 -2 2]);
+axis([-1.5 1.5 -1.5 1.5]);
 rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
 daspect([1,1,1]);
 xlabel('Real');
@@ -174,10 +174,10 @@ plot(qk_i, qk_q, 'b*', 'MarkerSize', 14);
 rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
 daspect([1,1,1]);
 grid on;
-axis([-2 2 -2 2]);
+axis([-1.5 1.5 -1.5 1.5]);
 xlabel('Real');
 ylabel('Imaginary');
-title('Received Symbols Constellation');
+title('Received Symbols Constellation (ideal synchronized phase)');
 print('-dpng', '~/study/university/semester7/diccom/recv_symbol_constellation.png');
 
 
@@ -187,10 +187,11 @@ plot(real(Symbols), imag(Symbols), 'r+', qk_i, qk_q, 'b*', 'MarkerSize', 12);
 rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
 daspect([1,1,1]);
 grid on;
-axis([-2 2 -2 2]);
+axis([0.65 0.75 0.65 0.75]);
 xlabel('Real');
 ylabel('Imaginary');
-title('Transmitted and Received Symbols Constellation');
+legend('Transmitted','Received');
+title('Transmitted and Received Symbols Constellation (ideal synchronized phase)');
 print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation.png');
 
 
@@ -218,7 +219,7 @@ plot(qk3_i, qk3_q, 'b*', 'MarkerSize', 14);
 rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
 daspect([1,1,1]);
 grid on;
-axis([-2 2 -2 2]);
+axis([-1.5 1.5 -1.5 1.5]);
 xlabel('Real');
 ylabel('Imaginary');
 title('Received Symbols Constellation, for phase difference of pi/6');
@@ -231,9 +232,10 @@ plot(real(Symbols), imag(Symbols), 'r+', qk3_i, qk3_q, 'b*', 'MarkerSize', 12);
 rectangle('Position',[-1,-1,2,2],'Curvature',[1,1],'LineWidth',1,'LineStyle',':');
 daspect([1,1,1]);
 grid on;
-axis([-2 2 -2 2]);
+axis([-1.5 1.5 -1.5 1.5]);
 xlabel('Real');
 ylabel('Imaginary');
+legend('Transmitted','Received');
 title('Transmitted and Received Symbols Constellation with phase difference pi/6');
 print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation_phase.png');
 
@@ -262,8 +264,24 @@ NoiseVariances = P_r ./ (10.^(gamma_d_vec./10));
 ChannelWindowFreqs = [f1,f2];
 ChannelWindowFilter = fir1(100,ChannelWindowFreqs);
 
-% The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
-NoiseSamples = filter(ChannelWindowFilter, 1, randn(1, length(ModulatedRandomBits)));
+NumWrongBits = [];
 
-ReceivedSignal = ModulatedRandomBits + NoiseSamples;
+for i = 1:length(gamma_d_vec)
+   variance = P_c / gamma_d_vec(i);
 
+   % The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
+   noise = 10*variance .* randn(1, length(ModulatedRandomBits));
+   NoiseSamples = filter(ChannelWindowFilter, 1, noise);
+   ReceivedSignal = ModulatedRandomBits + NoiseSamples;
+
+   % Demodulate and match
+   [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, Ts, f_s);
+   % Decide and decode
+   DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
+
+   % Count errors
+   NumWrongBits(i) = sum(abs(DecodedNoisyBits' - RandomBits));
+end
+
+BitErrorRates = NumWrongBits ./ length(RandomBits);
+plot(BitErrorRates);
