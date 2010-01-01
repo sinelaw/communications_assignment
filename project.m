@@ -237,3 +237,30 @@ ylabel('Imaginary');
 title('Transmitted and Received Symbols Constellation with phase difference pi/6');
 print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation_phase.png');
 
+
+% Channel with noise
+%----------------------------------
+% We want the noise centered at fc = 20khz (40pi*10^3 rad/sec)
+% and with a bandwith of Bch = 800hz, so f1 = 19.2khz, f2 = 20.8khz.
+% The sampling frequency is fs = 8fc.
+% The filter accepts the bandwith values as factors of fs/2 (for a value of 1 we get fs/2, 0.5 -> fs/4,
+% etc.)
+% In our case fs/2 = 4fc = 1 [normalized], so f / 4fc = [normalized value]
+%   f1 = 19.2 / 80 = 0.24,  f2 = 20.8 / 80 = 0.26
+
+
+gamma_d_max = 2*erfcinv(1e-3)^2
+gamma_d_min = 2*erfcinv(0.2)^2
+
+gamma_d_vec = gamma_d_min : 2 : gamma_d_max
+
+NoiseVariances = N_0 * Bch
+
+ChannelWindowFreqs = [0.24,0.26]
+ChannelWindowFilter = fir1(100,ChannelWindowFreqs)
+
+% The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
+NoiseSamples = filter(ChannelWindowFreqs, 1, randn(1, length(ModulatedRandomBits)))
+
+ReceivedSignal = ModulatedRandomBits + NoiseSamples
+

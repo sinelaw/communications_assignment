@@ -79,7 +79,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
   \begin{eqnarray*}
     a_{k_i} &=& \int_{kT_s}^{(k+1)T_s}{ x_{d_i}(t) g(t-kT_s) dt} \\
            &=&  \int_{kT_s}^{(k+1)T_s}{ A_0\sqrt{\frac{P_r}{2}} \left[ cos(\phi_k) + cos(2\omega_c t + \phi) \right]  dt} \\
-           &=&  A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
+           &=&  A_0\sqrt{\frac{P_r}{2}} T_s cos(\phi_k) + \int_{kT_s}^{(k+1)T_s}{ cos(2\omega_c t + \phi)  dt} 
   \end{eqnarray*}
   If $R_s \to m (2f_c)$ where $m \in \mathbb{N}$, the integral goes to zero, and we are left with:
   \begin{eqnarray*}
@@ -174,7 +174,8 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 
   \item Definitions of $\text{SNR}_{bit}^{(DD)}$ and $\text{SNR}_{sym}^{(DD)}$: 
     \begin{eqnarray*}
-      \text{SNR}_{sym}^{(DD)} &=& \frac{E_s}{N_0} = \frac{P_rE_g}{N_0}\sum_{k=0}^{M-1}{p_k|A_k|^2 } \\
+      \text{SNR}_{sym}^{(DD)} &=& \frac{P_{sym}}{P_{n_r}} = \frac{R_s E_s}{R_s N_0} = \frac{E_s}{N_0} \\
+                            &=& \frac{P_rE_g}{N_0}\sum_{k=0}^{M-1}{p_k|A_k|^2 } \\
       \text{SNR}_{bit}^{(DD)} &=& \frac{\text{SNR}_{sym}^{(DD)}}{\log_2(M)}
     \end{eqnarray*}
     In our case, $\forall k:|A_k|^2=1$, $E_g=T_s=1/R_s$, and $\log_2(M)=2$, and we assume uniform symbol distribution ($p_k=1/M$) so:
@@ -233,8 +234,11 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \end{eqnarray*}
     Assuming Gaussian white noise, because the integral (the matched filter) is a linear system we can calculate the variance (the power) as:
     \begin{eqnarray*} 
-      \sigma_z^2 &=& \int_{-\infty}^{\infty}{ S_{n_i}(f) |H_{MF}(f)|^2 df} \\
-                 &=& \int_{-\infty}^{\infty}{ \frac{N_0}{2}  |H_{MF}(f)|^2 df} \\
+      \sigma_z^2 = \sigma_{n_r}^2 = \sigma_{n_{r_i}}^2 &=& \frac{1}{2}\int_{-\infty}^{\infty}{ S_{n_i}(f) |H_{MF}(f)|^2 df} \\
+                 && \{\text{$n_{r_i}$ is baseband noise limited to $f \in R_s$ } \\
+                 && \text{$H_{MF}$ is fourier transform of $g(t)$, rectangular pulse } \\
+                 && \text{$\Rightarrow$ almost all energy of $H_{MF}$ is limited to $f \in R_s$}\} \\
+                 &\approx& \frac{1}{2} \int_{-\infty}^{\infty}{ N_0  |H_{MF}(f)|^2 df} \\
                  &=& \frac{N_0}{2} \int_{-\infty}^{\infty}{  |H_{MF}(f)|^2 df} \\
                  && \{\text{Parseval's theorem}\} \\
                  &=& \frac{N_0}{2} E_g = \frac{N_0}{2R_s} 
@@ -266,10 +270,11 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \begin{lstlisting}[label=lst:matlab_perr]{}
       gamma_d = 2*(erfcinv(p))^2
     \end{lstlisting}
-    For convenience we also find the relation between the noise variance and $\gamma_d$:
+    For convenience we also find the relation between the received noise variance and $\gamma_d$:
     \begin{equation} 
-      \sigma_z^2 = \frac{N_0^2}{2P_r} \gamma_d
+      \sigma_{n_r}^2 = \frac{1}{2} N_0 2R_s = N_0 R_s = \frac{P_r}{\gamma_d}
     \end{equation}
+    
 
 \end{enumerate}
 
@@ -451,6 +456,12 @@ Using Matlab and the definition in Equation \ref{eq:invP_errsym}, we calculate:
 \item $p_{err}=10^{-3} \Rightarrow \gamma_{d_{max}} = 10.8276$
 \item $p_{err}=0.2 \Rightarrow \gamma_{d_{max}} = 1.6424$
 \end{itemize}
+
+To produce bandlimited gaussian white noise in Matlab, we:
+\begin{enumerate}
+\item create a vector of random samples using normal distribution, n(t), 
+\item filter the random vector using Matlab's 'fir1' and 'filter' functions with appropriate bandwidth.
+\end{enumerate}
 
 
 
