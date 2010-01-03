@@ -96,7 +96,8 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft
 
 %--------------------------------------------------------------------------
 % Demodulate and match
-[qk_i, qk_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
+[qk_i, qk_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, zeros(size(ModulatedSymbolBits)), ...
+                                   Ts, f_s);
 
 % Decide and decode
 DecodedBits = decoder(MLLDecision([qk_i, qk_q]', Symbols),Symbols,SymbolBitVector);
@@ -199,7 +200,8 @@ print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellat
 % 3 - phase difference
 
 % Demodulate and match
-[qk3_i, qk3_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  pi/6, Ts, f_s);
+[qk3_i, qk3_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  pi/6, ...
+                                     zeros(size(ModulatedSymbolBits)), Ts, f_s);
 
 % Decide and decode
 DecodedBits3 = decoder(MLLDecision([qk3_i, qk3_q]', Symbols),Symbols,SymbolBitVector);
@@ -270,6 +272,7 @@ snr_bit_db_vec = 10*log10(snr_bit_linear_vec);
 P_r = P_c;
 NoiseVariances = P_r*4*f_c ./ (Rs*gamma_d_linear_vec);
 
+phase_zeros = zeros(size(ModulatedSymbolBits));
 
 BERsAverage = [];
 BERsStdDev = [];
@@ -284,7 +287,7 @@ for i = 1:length(gamma_d_vec)
     ReceivedSignal = ModulatedRandomBits + NoiseSamples;
 
     % Demodulate and match
-    [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, Ts, f_s);
+    [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, phase_zeros, Ts, f_s);
     % Decide and decode
     DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
 
@@ -334,7 +337,8 @@ for k = 1:length(Phases)
             ReceivedSignal = ModulatedRandomBits + NoiseSamples;
 
             % Demodulate and match
-            [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  PhaseDifference, Ts, f_s);
+            [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  PhaseDifference, ...
+                                                 phase_zeros, Ts, f_s);
             % Decide and decode
             DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
 
@@ -369,3 +373,10 @@ ylabel('Imaginary');
 title('Symbol constellation for 10^o phase difference and additive noise with gamma_d = 10.363');
 print('-dpng', '~/study/university/semester7/diccom/noise_symbol_constellation.png');
 % ----------------------------------------------------------------
+
+
+
+% Decision Feedback Loop
+%------------------------
+
+%ReceivedData;
