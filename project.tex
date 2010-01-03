@@ -540,6 +540,8 @@ How does $\xi$ behave when $K$ is changed? From Equation \ref{eq:tau2_k} we know
   K_{VCO} = \frac{K}{K_{PD}} = \frac{8 B_{eq}}{A_r A_0}
 \end{equation*}
 
+A note about $\tau_2$: although the value of $0$ is theoretically feasible, it is safer to assume that it must be strictly greater than 0. For example, in a second-order RC circuit, a value of zero corresponds to a short (zero resistance) on the capacitor branch.
+
 We summarize the numeric values of inputs and results of the above calculations in Table \ref{tab:k_result}.
 
   \begin{center}
@@ -572,8 +574,8 @@ We summarize the numeric values of inputs and results of the above calculations 
 
 
 \clearpage
-\bibliographystyle{plain}
-\bibliography{projectbib}
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,projectbib}
 
 
 \end{document}
