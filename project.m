@@ -1,5 +1,5 @@
 
-NumberOfRandomSymbols = 5000;
+NumberOfRandomSymbols = 50;
 
 % Modulation parameters
 Rb = 800;
@@ -9,7 +9,7 @@ Bch = 800;
 f_c = 20*10^3;% carrier frequency
 omega_c = 2*pi*f_c; 
 
-f_s = 8*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
+SamplesPerSecond = 8*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
 P_c = 10; % transmission power
 A_c = sqrt(2*P_c); % transmission amplitude
 
@@ -59,7 +59,7 @@ print('-dpng', '~/study/university/semester7/diccom/symbol_constellation.png');
 
 [ak, bk] = encoder(SymbolBits, Symbols, SymbolBitValues, BitsPerSymbol);
 SmallDataSetSymbols = ak + 1j * bk;
-[ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, A_c, f_s);
+[ModulatedSymbolBits, t] = modulate(ak, bk, Ts, omega_c, 0, A_c, SamplesPerSecond);
 subplot(1,1,1);
 plot(t, ModulatedSymbolBits);
 grid on;
@@ -71,13 +71,13 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_small_dataset.png'
 
 % Modulate the RandomBits data set
 [akr, bkr] = encoder(RandomBits, Symbols, SymbolBitValues, BitsPerSymbol);
-[ModulatedRandomBits, t]= modulate(akr, bkr, Ts, omega_c, 0, A_c, f_s);
+[ModulatedRandomBits, t]= modulate(akr, bkr, Ts, omega_c, 0, A_c, SamplesPerSecond);
 N = length(ModulatedRandomBits);
 FFTResult = fftshift(fft(ModulatedRandomBits) / N);
 FreqResp = abs(FFTResult);
 PhaseResp = angle(FFTResult);
 % Fix the fft result so the we have negative frequencies on the left
-frequencies = f_s / N * [-N/2 : N/2-1];
+frequencies = SamplesPerSecond / N * [-N/2 : N/2-1];
 
 subplot(2,1,1);
 plot(frequencies, FreqResp);
@@ -97,7 +97,7 @@ print('-dpng', '~/study/university/semester7/diccom/modulated_random_dataset_fft
 %--------------------------------------------------------------------------
 % Demodulate and match
 [qk_i, qk_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  0, zeros(size(ModulatedSymbolBits)), ...
-                                   Ts, f_s);
+                                   Ts, SamplesPerSecond);
 
 % Decide and decode
 DecodedBits = decoder(MLLDecision([qk_i, qk_q]', Symbols),Symbols,SymbolBitVector);
@@ -106,7 +106,7 @@ display('The decoded bits are:');
 DecodedBits
 
 % Show the transmit filter output
-[s_di, s_dq ,t] = transmit_filter(ak, bk, Ts, f_s);
+[s_di, s_dq ,t] = transmit_filter(ak, bk, Ts, SamplesPerSecond);
 subplot(2,1,1);
 plot(t, s_di);
 grid on;
@@ -146,7 +146,7 @@ print('-dpng', '~/study/university/semester7/diccom/sampled_matched_filter_outpu
 
 
 % Show the matched filter outputs before sampling
-[q_i, q_q, t] = matched_demodulate_nosampling( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, f_s);
+[q_i, q_q, t] = matched_demodulate_nosampling( ModulatedSymbolBits , 1, A_c, omega_c,  0, Ts, SamplesPerSecond);
 subplot(2,1,1);
 plot(t, q_i);
 grid on;
@@ -201,7 +201,7 @@ print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellat
 
 % Demodulate and match
 [qk3_i, qk3_q] = matched_demodulate( ModulatedSymbolBits , 1, A_c, omega_c,  pi/6, ...
-                                     zeros(size(ModulatedSymbolBits)), Ts, f_s);
+                                     zeros(size(ModulatedSymbolBits)), Ts, SamplesPerSecond);
 
 % Decide and decode
 DecodedBits3 = decoder(MLLDecision([qk3_i, qk3_q]', Symbols),Symbols,SymbolBitVector);
@@ -272,7 +272,7 @@ snr_bit_db_vec = 10*log10(snr_bit_linear_vec);
 P_r = P_c;
 NoiseVariances = P_r*4*f_c ./ (Rs*gamma_d_linear_vec);
 
-phase_zeros = zeros(size(ModulatedSymbolBits));
+phase_zeros = zeros(size(ModulatedRandomBits));
 
 BERsAverage = [];
 BERsStdDev = [];
@@ -287,7 +287,7 @@ for i = 1:length(gamma_d_vec)
     ReceivedSignal = ModulatedRandomBits + NoiseSamples;
 
     % Demodulate and match
-    [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, phase_zeros, Ts, f_s);
+    [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, phase_zeros, Ts, SamplesPerSecond);
     % Decide and decode
     DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
 
@@ -338,7 +338,7 @@ for k = 1:length(Phases)
 
             % Demodulate and match
             [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  PhaseDifference, ...
-                                                 phase_zeros, Ts, f_s);
+                                                 phase_zeros, Ts, SamplesPerSecond);
             % Decide and decode
             DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
 
@@ -378,5 +378,11 @@ print('-dpng', '~/study/university/semester7/diccom/noise_symbol_constellation.p
 
 % Decision Feedback Loop
 %------------------------
+ReceivedSignal = ModulatedRandomBits;
+ConstPhase = 0;
+PhaseVariance = (pi/36)^2;
+SNRbit = sqrt(10);
+A_r = A_c;
+symbols = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
+                                        Ts, PhaseVariance, SNRbit, Symbols, SamplesPerSecond);
 
-%ReceivedData;

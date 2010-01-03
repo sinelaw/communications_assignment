@@ -1,5 +1,5 @@
-function [ q_ki, q_kq ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
-                                                  phase_variance, SNRbit, SamplesPerSecond)
+function [ symbols ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
+                                                  phase_variance, SNRbit, Symbols, SamplesPerSecond)
 %DecisionFeedbackLoopReceiver Receives a modulated data stream in s_r and uses a DFL receiver to decode the data.
 %   Returns vector of pairs (2 x N) q_k = [[q1_ki; q1_kq], [q2_ki; q2_kq], ...]
 
@@ -30,33 +30,40 @@ VCOFilter = tf([Kvco],[1,0], SamplesPerSecond);
 q_ki = zeros(NumberOfSymbols,1);
 q_kq = zeros(NumberOfSymbols,1);
 
-EsitmatedPhase = 0;
+EstimatedPhases = zeros(1,SamplesPerSymbol);
+ak_i = cos(pi/4);
+ak_q = sin(pi/4);
+
+symbols = zeros(2, NumberOfSymbols);
+
 for i = 1:NumberOfSymbols
     % i at each step
     k = i-1;
     lower_bound = k*SamplesPerSymbol+1;
     upper_bound = (k+1)*SamplesPerSymbol;
-    TimeInterval = t(1,lower_bound : upper_bound);
+    TimeInterval = t(1, lower_bound : upper_bound);
     
-    [s1a,s2a] = PhaseDetector(s_r, EsitmatedPhase, omega_c, SamplesPerSecond, TimeInterval);
+    [s1a,s2a] = PhaseDetector(s_r(1,lower_bound:upper_bound), EstimatedPhases, A_0, omega_c, const_phase_offset, TimeInterval);
     
-    s1b = s1a .* q_kq_prev;
-    s2b = s2a .* q_ki_prev;
+    s1b = s1a .* ak_q;
+    s2b = s2a .* ak_i;
 
     % Phase error
     epsilon = s2b - s1b;
 
-    LoopFilterOutput = lsim(LoopFilter, epsilon);
-    NextEstimatedPhases = lsim(VCOFilter, LoopFilterOutput);
+    LoopFilterOutput = lsim(LoopFilter, epsilon');
+    NextEstimatedPhases = lsim(VCOFilter, LoopFilterOutput)';
 
     % Demodulate the current symbol
-    [qk_i, qk_q] = matched_demodulate( s_r , A_0, A_r, omega_c, const_phase_offset, NextEstimatedPhases, Ts, ...
-                                       SamplesPerSecond);
-    [ak_i, ak_q] = MLLDecision([qk_i, qk_q]', Symbols);
+    [qk_i, qk_q] = matched_demodulate( s_r(1,lower_bound:upper_bound) , A_0, A_r, omega_c, ...
+                                       const_phase_offset, NextEstimatedPhases, Ts, SamplesPerSecond);
+    [sym_index, symbol] = MLLDecision([qk_i, qk_q]', Symbols);
     
-    %DecodedBits = decoder(,Symbols,SymbolBitVector);
-
-
+    ak_i = real(symbol);
+    ak_q = imag(symbol);
+    symbols(1, i) = ak_i;
+    symbols(2, i) = ak_q;
+    EstimatedPhases = NextEstimatedPhases;
 end
 
 end

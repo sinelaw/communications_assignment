@@ -15,8 +15,8 @@ t(:,end) = []; % Erase last time value (belongs to next symbol)
 % Demodulate. We multiply by 2Rs/A_r = 2/(A_r *Ts) already here, it's for restoring the
 % amplitudes to the transmitted value (of course disregarding channel
 % deamplification)
-x_di =  A_0 * cos(omega_c*t + constant_phase .+ varying_phase) .* s_r * 2/ (A_r*Ts);
-x_dq = -A_0 * sin(omega_c*t + constant_phase .+ varying_phase) .* s_r * 2/ (A_r*Ts);
+x_di =  A_0 * cos(omega_c*t + constant_phase + varying_phase) .* s_r * 2/ (A_r*Ts);
+x_dq = -A_0 * sin(omega_c*t + constant_phase + varying_phase) .* s_r * 2/ (A_r*Ts);
 
 % Receive filter (matched filter)
 q_ki = zeros(NumberOfSymbols,1);
