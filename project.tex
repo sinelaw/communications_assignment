@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{Project in Digital Communication Systems}
-\author{Noam Lewis, Zvulun Avramov}
+\author{Noam~Lewis,~014740351  Zvulun~Avramov,~310877188}
 
 \maketitle
 
@@ -540,7 +540,33 @@ How does $\xi$ behave when $K$ is changed? From Equation \ref{eq:tau2_k} we know
   K_{VCO} = \frac{K}{K_{PD}} = \frac{8 B_{eq}}{A_r A_0}
 \end{equation*}
 
+We summarize the numeric values of inputs and results of the above calculations in Table \ref{tab:k_result}.
 
+  \begin{center}
+    \begin{table}[h!]
+      \centering
+      \begin{tabular}[h!]{| l | l |}
+      \hline 
+      \bf{Name}          &  \bf{Value}  \\ \hline
+      \hline
+      $R_s$           &  400 [Hz] \\ \hline
+      $P_r$           &  10 [W] \\ \hline
+      $A_r$           &  $\sqrt{2P_r}=\sqrt{20}$ \\ \hline
+      $A_0$           &  $\sqrt{2}$ \\ \hline
+      $SNR_{bit}$      &  5 [dB] = $\sqrt{10}$ \\ \hline
+      $\tau_1$        &  0.5 \\ \hline
+      \hline
+      $\sigma_{psi}$   &  $5^O = \pi / 36$  \\ \hline
+      $K_{PD}$         &  $\sqrt{10}$ \\ \hline
+      $B_{eq}$         &  $50 \sqrt{10}\left(\frac{\pi}{81}\right)^2 \approx 19.2656 $ \\ \hline
+      $K$         &  $4 B_{eq} = 200 \sqrt{10}\left(\frac{\pi}{81}\right)^2 \approx 77.0628 $ \\ \hline
+      $\tau_2$    &  $0$ \\
+      \hline
+      \end{tabular}
+      \caption{Summary of numerical values for decision feedback loop.}
+      \label{tab:k_result}
+    \end{table}
+  \end{center}
 
 
 
