@@ -378,11 +378,14 @@ print('-dpng', '~/study/university/semester7/diccom/noise_symbol_constellation.p
 
 % Decision Feedback Loop
 %------------------------
+
+A_r = A_c;
 ReceivedSignal = ModulatedRandomBits;
-ConstPhase = 0;
+ConstPhase = pi/36;
 PhaseVariance = (pi/36)^2;
 SNRbit = sqrt(10);
-A_r = A_c;
-symbols = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
-                                        Ts, PhaseVariance, SNRbit, Symbols, SamplesPerSecond);
+[symbols, phase, phase_error] = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
+                                                  Ts, PhaseVariance, SNRbit, Symbols, SamplesPerSecond);
 
+subplot(1,1,1);
+stem(phase_error.^2);

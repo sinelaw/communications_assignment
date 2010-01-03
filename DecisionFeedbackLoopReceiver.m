@@ -1,5 +1,5 @@
-function [ symbols ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
-                                                  phase_variance, SNRbit, Symbols, SamplesPerSecond)
+function [ symbols, phase, phase_error ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
+                                                                 phase_variance, SNRbit, Symbols, SamplesPerSecond)
 %DecisionFeedbackLoopReceiver Receives a modulated data stream in s_r and uses a DFL receiver to decode the data.
 %   Returns vector of pairs (2 x N) q_k = [[q1_ki; q1_kq], [q2_ki; q2_kq], ...]
 
@@ -12,20 +12,23 @@ NumberOfSymbols = NumberOfSamples / SamplesPerSymbol;
 t = 0:dt:(NumberOfSamples*dt); % calculate time sample values
 t(:,end) = []; % Erase last time value (belongs to next symbol)
 
+SingleTimeInterval = 0:dt:Ts;
+SingleTimeInterval(:,end) = [];
+
 % DFL Parameters
 Rs = 1/Ts;
 Pr = A_r^2 / 2;
 N0 = Pr / (2*Rs*SNRbit);
 Kpd = A_r * A_0 / 2;
 tau1 = 0.5;
-tau2 = 0;
+tau2 = 7.12e-3;
 Beq = Kpd^2*phase_variance/N0;
-K = 4*Beq;
+K = 96.6; %4*Beq;
 Kvco = K/Kpd;
 % ---------------------
 
-LoopFilter = tf([tau2,1],[tau1,1], SamplesPerSecond);
-VCOFilter = tf([Kvco],[1,0], SamplesPerSecond);
+LoopFilter = tf([tau2,1],[tau1,1]); %, SamplesPerSecond);
+VCOFilter = tf([Kvco],[1,0]); %, SamplesPerSecond);
 
 q_ki = zeros(NumberOfSymbols,1);
 q_kq = zeros(NumberOfSymbols,1);
@@ -35,7 +38,8 @@ ak_i = cos(pi/4);
 ak_q = sin(pi/4);
 
 symbols = zeros(2, NumberOfSymbols);
-
+phase_error = zeros(1, NumberOfSymbols*SamplesPerSymbol);
+phase = zeros(1, NumberOfSymbols*SamplesPerSymbol);
 for i = 1:NumberOfSymbols
     % i at each step
     k = i-1;
@@ -50,9 +54,11 @@ for i = 1:NumberOfSymbols
 
     % Phase error
     epsilon = s2b - s1b;
+    phase_error(1,lower_bound:upper_bound) = epsilon;
+    phase(1,lower_bound:upper_bound) = EstimatedPhases;
 
-    LoopFilterOutput = lsim(LoopFilter, epsilon');
-    NextEstimatedPhases = lsim(VCOFilter, LoopFilterOutput)';
+    LoopFilterOutput = lsim(LoopFilter, epsilon', SingleTimeInterval);
+    NextEstimatedPhases = lsim(VCOFilter, LoopFilterOutput, SingleTimeInterval)';
 
     % Demodulate the current symbol
     [qk_i, qk_q] = matched_demodulate( s_r(1,lower_bound:upper_bound) , A_0, A_r, omega_c, ...
