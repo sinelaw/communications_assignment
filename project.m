@@ -1,5 +1,5 @@
 
-NumberOfRandomSymbols = 50;
+NumberOfRandomSymbols = 5000;
 
 % Modulation parameters
 Rb = 800;
@@ -240,7 +240,7 @@ title('Transmitted and Received Symbols Constellation with phase difference pi/6
 print('-dpng', '~/study/university/semester7/diccom/trans_recv_symbol_constellation_phase.png');
 
 
-% Channel with noise
+% Channel with noise - synced phase
 %----------------------------------
 % We want the noise centered at fc = 20khz (40pi*10^3 rad/sec)
 % and with a bandwith of Bch = 800hz, so f1 = 19.6khz, f2 = 20.4khz.
@@ -257,31 +257,89 @@ gamma_d_max = 10*log10( 2*erfcinv(1e-3)^2 );
 gamma_d_min = 10*log10( 2*erfcinv(0.2)^2 );
 
 gamma_d_vec = gamma_d_min : 2 : gamma_d_max
+gamma_d_linear_vec = 10.^(gamma_d_vec./10);
 
 P_r = P_c;
-NoiseVariances = P_r ./ (10.^(gamma_d_vec./10));
+NoiseVariances = P_r*4*f_c ./ (Rs*gamma_d_linear_vec);
 
 ChannelWindowFreqs = [f1,f2];
-ChannelWindowFilter = fir1(100,ChannelWindowFreqs);
+ChannelWindowFilter = fir1(1000,ChannelWindowFreqs);
 
-NumWrongBits = [];
-
+BERsAverage = [];
+BERsStdDev = [];
 for i = 1:length(gamma_d_vec)
-   variance = P_c / gamma_d_vec(i);
+  BERs = [];
+  for j = 1:3
+    % The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
+    noise = sqrt(NoiseVariances(i)) .* randn(1, length(ModulatedRandomBits));
+    NoiseSamples = filter(ChannelWindowFilter, 1, noise);
+    ReceivedSignal = ModulatedRandomBits + NoiseSamples;
 
-   % The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
-   noise = 10*variance .* randn(1, length(ModulatedRandomBits));
-   NoiseSamples = filter(ChannelWindowFilter, 1, noise);
-   ReceivedSignal = ModulatedRandomBits + NoiseSamples;
+    % Demodulate and match
+    [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, Ts, f_s);
+    % Decide and decode
+    DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
 
-   % Demodulate and match
-   [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c,  0, Ts, f_s);
-   % Decide and decode
-   DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
-
-   % Count errors
-   NumWrongBits(i) = sum(abs(DecodedNoisyBits' - RandomBits));
+    % Count errors
+    BERs(j) = sum(abs(DecodedNoisyBits' - RandomBits))/(length(DecodedNoisyBits));
+  end
+  BERsAverage(i) =  mean(BERs);
+  BERsStdDev(i) = std(BERs);
 end
 
-BitErrorRates = NumWrongBits ./ length(RandomBits);
-plot(BitErrorRates);
+AnalyticBER = erfc(sqrt(gamma_d_linear_vec/2))/2;
+
+subplot(1,1,1);
+%loglog(gamma_d_linear_vec/2, BitErrorRates, gamma_d_linear_vec/2, );
+hold off;
+loglog(gamma_d_linear_vec/2, AnalyticBER, 'b-');
+hold;
+errorbar(gamma_d_linear_vec/2, BERsAverage, BERsStdDev, 'r');
+
+legend('Analytic', 'Simulation');
+grid on;
+xlabel('SND_d^{(bit)} [dB]');
+ylabel('P_{err}^{(bit)}');
+title('Bit Error Rate for noisy channel with synchronized phase');
+print('-dpng', '~/study/university/semester7/diccom/BER_noise.png');
+
+
+
+
+% % Channel with noise - unsynced phase
+% %----------------------------------
+% BERsAverage = [];
+% BERsStdDev = [];
+% for PhaseDifference = [5 10]
+%     for i = 1:length(gamma_d_vec)
+%         BERs = [];
+%         for j = 1:3
+%             % The number of noise samples should equal the number of modulated data samples = length(ModulatedRandomBits)
+%             noise = sqrt(NoiseVariances(i)) .* randn(1, length(ModulatedRandomBits));
+%             NoiseSamples = filter(ChannelWindowFilter, 1, noise);
+%             ReceivedSignal = ModulatedRandomBits + NoiseSamples;
+
+%             % Demodulate and match
+%             [qkn_i, qkn_q] = matched_demodulate( ReceivedSignal , 1, A_c, omega_c, PhaseDifference, Ts, f_s);
+%             % Decide and decode
+%             DecodedNoisyBits = decoder(MLLDecision([qkn_i, qkn_q]', Symbols),Symbols,SymbolBitVector);
+
+%             % Count errors
+%             BERs(j) = mean(abs(DecodedNoisyBits' - RandomBits));
+%         end
+%         BERsAverage(i) =  mean(BERs);
+%         BERsStdDev(i) = std(BERs);
+%     end
+% end
+
+% subplot(1,1,1);
+% %loglog(gamma_d_linear_vec, BitErrorRates, gamma_d_linear_vec, erfc(gamma_d_linear_vec/2)/2);
+% errorbar(gamma_d_linear_vec, BERsAverage, BERsStdDev);
+% legend('Simulation', 'Analytic');
+% grid on;
+% xlabel('SND_d [dB]');
+% ylabel('P_err_bit');
+% title('Bit Error Rate for noisy channel with synchronized phase');
+% print('-dpng', '~/study/university/semester7/diccom/BER_noise.png');
+
+  
