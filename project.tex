@@ -272,6 +272,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
     \end{lstlisting}
     For convenience we also find the relation between the received noise variance and $\gamma_d$:
     \begin{equation} 
+      \label{eq:sigma_noise_gamma}
       \sigma_{n_r}^2 = \frac{1}{2} N_0 2R_s = N_0 R_s = \frac{P_r}{\gamma_d}
     \end{equation}
     
@@ -462,8 +463,11 @@ To produce bandlimited gaussian white noise in Matlab, we:
 \item create a vector of random samples using normal distribution, n(t), 
 \item filter the random vector using Matlab's 'fir1' and 'filter' functions with appropriate bandwidth.
 \end{enumerate}
-
-
+Before filtering, the random samples have power density in the range of the sampling frequency. We have a target variance (given by Equation \ref{eq:sigma_noise_gamma}). Thus, to calculate the proper variance to use in the creation of the vector, we use our sampling frequency of $f_s = 8f_c$:
+\begin{equation*}
+  \sigma_{n_{sim}}^2 = \frac{f_s N_0}{2} = \frac{4 P_r f_c}{R_s \gamma_d}
+\end{equation*}
+This way, after filtering we will have the appropriate variance (power).
 
 \end{document}
 
