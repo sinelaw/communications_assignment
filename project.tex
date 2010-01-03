@@ -560,8 +560,9 @@ We summarize the numeric values of inputs and results of the above calculations 
       \hline
       $\sigma_{psi}$   &  $5^O = \pi / 36$  \\ \hline
       $K_{PD}$         &  $\sqrt{10}$ \\ \hline
-      $B_{eq}$         &  $50 \sqrt{10}\left(\frac{\pi}{81}\right)^2 \approx 19.2656 $ \\ \hline
-      $K$         &  $4 B_{eq} = 200 \sqrt{10}\left(\frac{\pi}{81}\right)^2 \approx 77.0628 $ \\ \hline
+      $B_{eq}$         &  $50 \sqrt{10}\left(\frac{\pi}{9}\right)^2 \approx 19.2656 $ \\ \hline
+      $K$         &  $4 B_{eq} = 200 \sqrt{10}\left(\frac{\pi}{9}\right)^2 \approx 77.0628 $ \\ \hline
+      $K_{VCO}$         &  $200 \left(\frac{\pi}{9}\right)^2 \approx 24.37$ \\ \hline
       $\tau_2$    &  $0$ \\
       \hline
       \end{tabular}
@@ -571,7 +572,21 @@ We summarize the numeric values of inputs and results of the above calculations 
   \end{center}
 
 
+Figures \ref{fig:DFL} and \ref{fig:DFL_noise} show the phase error of the DFL loop without and with noise, and a constant phase difference of $5^o$. The system locks onto the phase very quickly but for reasons unsolved by the time of writing, suddenly diverges at certain points. The bits are decoded correctly.
 
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{phase_error_dfl.png}
+    \caption{Square phase error for 5^o constant phase difference with no noise}
+    \label{fig:DFL}
+  \end{figure}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{phase_error_dfl_noise.png}
+    \caption{Squared Phase error for 5^o constant phase difference WITH noise}
+    \label{fig:DFL_noise}
+  \end{figure}
 
 \clearpage
 \bibliographystyle{IEEEtran}

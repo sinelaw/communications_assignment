@@ -1,4 +1,4 @@
-function [ symbols, phase, phase_error ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
+function [ symbols, phase, phase_error, t ] = DecisionFeedbackLoopReceiver( s_r, A_r, A_0, omega_c, const_phase_offset, Ts, ...
                                                                  phase_variance, SNRbit, Symbols, SamplesPerSecond)
 %DecisionFeedbackLoopReceiver Receives a modulated data stream in s_r and uses a DFL receiver to decode the data.
 %   Returns vector of pairs (2 x N) q_k = [[q1_ki; q1_kq], [q2_ki; q2_kq], ...]
@@ -34,8 +34,8 @@ q_ki = zeros(NumberOfSymbols,1);
 q_kq = zeros(NumberOfSymbols,1);
 
 EstimatedPhases = zeros(1,SamplesPerSymbol);
-ak_i = cos(pi/4);
-ak_q = sin(pi/4);
+ak_i = -cos(pi/4);
+ak_q = -sin(pi/4);
 
 symbols = zeros(2, NumberOfSymbols);
 phase_error = zeros(1, NumberOfSymbols*SamplesPerSymbol);
@@ -49,26 +49,26 @@ for i = 1:NumberOfSymbols
     
     [s1a,s2a] = PhaseDetector(s_r(1,lower_bound:upper_bound), EstimatedPhases, A_0, omega_c, const_phase_offset, TimeInterval);
     
-    s1b = s1a .* ak_q;
-    s2b = s2a .* ak_i;
+    s1b = filter(lowpass_1000, s1a) .* ak_q;
+    s2b = filter(lowpass_1000, s2a) .* ak_i;
 
     % Phase error
-    epsilon = s2b - s1b;
+    epsilon = filter(lowpass_1000, s2b - s1b);
     phase_error(1,lower_bound:upper_bound) = epsilon;
-    phase(1,lower_bound:upper_bound) = EstimatedPhases;
 
     LoopFilterOutput = lsim(LoopFilter, epsilon', SingleTimeInterval);
     NextEstimatedPhases = lsim(VCOFilter, LoopFilterOutput, SingleTimeInterval)';
+    phase(1,lower_bound:upper_bound) = NextEstimatedPhases;
 
     % Demodulate the current symbol
     [qk_i, qk_q] = matched_demodulate( s_r(1,lower_bound:upper_bound) , A_0, A_r, omega_c, ...
-                                       const_phase_offset, NextEstimatedPhases, Ts, SamplesPerSecond);
+                                       const_phase_offset, EstimatedPhases, Ts, SamplesPerSecond);
     [sym_index, symbol] = MLLDecision([qk_i, qk_q]', Symbols);
     
     ak_i = real(symbol);
     ak_q = imag(symbol);
-    symbols(1, i) = ak_i;
-    symbols(2, i) = ak_q;
+    symbols(1, i) = qk_i;
+    symbols(2, i) = qk_q;
     EstimatedPhases = NextEstimatedPhases;
 end
 

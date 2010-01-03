@@ -1,5 +1,5 @@
 
-NumberOfRandomSymbols = 50;
+NumberOfRandomSymbols = 5000;
 
 % Modulation parameters
 Rb = 800;
@@ -12,6 +12,8 @@ omega_c = 2*pi*f_c;
 SamplesPerSecond = 8*f_c; % sampling frequency = 4 * carrier freq. so that the fft will give the peak in the middle
 P_c = 10; % transmission power
 A_c = sqrt(2*P_c); % transmission amplitude
+
+P_r = P_c;
 
 
 BitsPerSymbol = log2(M);
@@ -269,7 +271,6 @@ gamma_d_linear_vec = 10.^(gamma_d_vec./10);
 snr_bit_linear_vec = gamma_d_linear_vec/2;
 snr_bit_db_vec = 10*log10(snr_bit_linear_vec);
 
-P_r = P_c;
 NoiseVariances = P_r*4*f_c ./ (Rs*gamma_d_linear_vec);
 
 phase_zeros = zeros(size(ModulatedRandomBits));
@@ -380,12 +381,42 @@ print('-dpng', '~/study/university/semester7/diccom/noise_symbol_constellation.p
 %------------------------
 
 A_r = A_c;
-ReceivedSignal = ModulatedRandomBits;
-ConstPhase = pi/36;
-PhaseVariance = (pi/36)^2;
-SNRbit = sqrt(10);
-[symbols, phase, phase_error] = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
+SNRbit = 0;
+%NoiseVariance = P_r*4*f_c ./ (Rs*SNRbit*2);
+%noise = sqrt(NoiseVariance) .* randn(1,length(ModulatedRandomBits));
+%NoiseSamples = filter(ChannelWindowFilter, 1, noise);
+ReceivedSignal = ModulatedRandomBits;% + NoiseSamples;
+ConstPhase = 0;
+PhaseVariance = 0;
+[symbols, phase, phase_error, t] = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
                                                   Ts, PhaseVariance, SNRbit, Symbols, SamplesPerSecond);
 
 subplot(1,1,1);
-stem(phase_error.^2);
+plot(t, (phase-pi/36).^2);
+grid on;
+xlabel('Time');
+ylabel('Phase error (squared)');
+title('Phase error for 5^o constant phase difference with no noise');
+print('-dpng', '~/study/university/semester7/diccom/phase_error_dfl.png');
+
+
+
+
+
+SNRbit = sqrt(10);
+NoiseVariance = P_r*4*f_c ./ (Rs*SNRbit*2);
+noise = sqrt(NoiseVariance) .* randn(1,length(ModulatedRandomBits));
+NoiseSamples = filter(ChannelWindowFilter, 1, noise);
+ReceivedSignal = ModulatedRandomBits + NoiseSamples;
+ConstPhase = pi/36;
+PhaseVariance = (pi/36)^2;
+[symbols, phase, phase_error, t] = DecisionFeedbackLoopReceiver( ReceivedSignal, A_r, A_0, omega_c, ConstPhase, ...
+                                                  Ts, PhaseVariance, SNRbit, Symbols, SamplesPerSecond);
+
+subplot(1,1,1);
+plot(t, (phase-pi/36).^2);
+grid on;
+xlabel('Time');
+ylabel('Phase error (Squared)');
+title('Phase error for 5^o constant phase difference WITH noise');
+print('-dpng', '~/study/university/semester7/diccom/phase_error_dfl_noise.png');
