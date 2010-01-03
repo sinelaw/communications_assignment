@@ -309,18 +309,13 @@ grid on;
 xlabel('SND_d^{(bit)} [dB]');
 ylabel('P_{err}^{(bit)}');
 title('Bit Error Rate for noisy channel with synchronized phase');
-%print('-dpng', '~/study/university/semester7/diccom/BER_noise.png');
+print('-dpng', '~/study/university/semester7/diccom/BER_noise.png');
 hold off;
 
 
 
 % % Channel with noise - unsynced phase
 % %----------------------------------
-subplot(1,1,1);
-hold off;
-semilogy(snr_bit_db_vec, AnalyticBER, 'b-');
-hold;
-
 PhaseBERsAverage = [];
 PhaseBERsStdDev = [];
 Phases = [5 10];
@@ -349,16 +344,28 @@ for k = 1:length(Phases)
         PhaseBERsAverage(k,i) =  mean(BERs);
         PhaseBERsStdDev(k,i) = std(BERs);
     end
-    errorbar(snr_bit_db_vec, PhaseBERsAverage(k,:), PhaseBERsStdDev(k,:), Colors(k));
 end
 
+subplot(1,1,1);
+hold off;
+semilogy(snr_bit_db_vec, AnalyticBER, 'b-');
+hold;
+for k = 1:length(Phases)
+    errorbar(snr_bit_db_vec, PhaseBERsAverage(k,:), PhaseBERsStdDev(k,:), Colors(k));
+end;
 legend('Analytic', 'Simulation - phase 5^o', 'Simulation - phase 10^o');
 grid on;
 xlabel('SND_d^{(bit)} [dB]');
 ylabel('P_{err}^{(bit)}');
 title('Bit Error Rate for noisy channel with unsynchronized phase');
-%print('-dpng', '~/study/university/semester7/diccom/BER_noise_phase.png');
+print('-dpng', '~/study/university/semester7/diccom/BER_noise_phase.png');
 hold off;
 
 
+plot(qkn_i +1j*qkn_q,'r+')
+grid on;
+xlabel('Real');
+ylabel('Imaginary');
+title('Symbol constellation for 10^o phase difference and additive noise with gamma_d = 10.363');
+print('-dpng', '~/study/university/semester7/diccom/noise_symbol_constellation.png');
 % ----------------------------------------------------------------

@@ -279,6 +279,7 @@ Therefore, $M=4$ so we are using 4QAM. Choosing symmetric symbols yields $A_n \i
 
 \end{enumerate}
 
+\clearpage
 \section{Simulation}
 
 \subsection{Data sets}
@@ -304,7 +305,7 @@ The symbol/bit patterns appear in Table \ref{tab:bitsymbols}. The symbol constel
 
   \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{symbol_constellation.png}
+    \includegraphics[height=3.5in]{symbol_constellation.png}
     \caption{Constellation of symbols received}
     \label{fig:trans_constellation}
   \end{figure}
@@ -313,14 +314,14 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 
   \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{modulated_small_dataset.png}
+    \includegraphics[height=3.5in]{modulated_small_dataset.png}
     \caption{$s_M(t)$ for small data set}
     \label{fig:s_M(t)}
   \end{figure}
 
   \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{modulated_random_dataset_fft.png}
+    \includegraphics[height=3.5in]{modulated_random_dataset_fft.png}
     \caption{$S_M(f)$ for large (random) data set}
     \label{fig:S_M(f)}
   \end{figure}
@@ -328,28 +329,24 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 \subsection{Receiver, no noise}
 \begin{enumerate}
 \item Time domain graphs of signals: outputs of transmit filters in Figure \ref{fig:s_d(t)}; outputs of matched filters in receiver in Figure \ref{fig:q(t)}. The transmit filter simply outputs a constant function of the symbol because we use a full-response pulse ($g(t) = 1\ \forall t \in Ts\ ,\ 0\ \text{otherwise}$). The matched filter produces an integral of the demodulated signal re-starting from 0 at every symbol interval. We can see that the peak of the integral corresponds to the end of the symbol interval, and is equal to the value of the symbol that was transmitted.
-
   \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{transmit_filter_output.png}
+    \includegraphics[height=3.5in]{transmit_filter_output.png}
     \caption{$s_{d_i}(t)$ and $s_{d_q}(t)$, outputs of the transmit filter (before modulation)}
     \label{fig:s_d(t)}
   \end{figure}
-
   \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{matched_filter_output.png}
+    \includegraphics[height=3.5in]{matched_filter_output.png}
     \caption{$q_i(t)$ and $q_q(t)$, sampled outputs of the matched filters (before decision device)}
     \label{fig:q(t)}
   \end{figure}
 
 \item Symbols: for constant phase - ideal synchronization between transmitter and receiver. Table \ref{tab:recvsymbols} shows the values of the symbols received from the matched filter (after sampling). Figure \ref{fig:recv_constellation} shows the received symbols as a constellation. A comparison of the transmitted symbols with the received ones shows that they are quite close, as can be seen in Figure \ref{fig:zoom_constellation}. The errors (difference) between distances of transmitted symbols to those received are shown in Table \ref{tab:dist_recvsymbols}. The errors are small, and are due to the inprecise integration method ('trapz' Matlab function, trapezoid integration) used in the simulation. In an ideal system there would be no error in this case. Mathematically, the distances are 0.
-
-
   \begin{center}
-    \begin{table}[h]
+    \begin{table}[h!]
       \centering
-      \begin{tabular}[h]{| l | l |}
+      \begin{tabular}[h!]{| l | l |}
       \hline
       k             &  Received Symbol  \\ \hline
       1             &  0.7035 + 0.7053j \\ \hline
@@ -362,18 +359,16 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
       \label{tab:recvsymbols}
     \end{table}
   \end{center}
-
-  \begin{figure}[h]
+  \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{recv_symbol_constellation.png}
+    \includegraphics[height=3.5in]{recv_symbol_constellation.png}
     \caption{Constellation of symbols received}
     \label{fig:recv_constellation}
   \end{figure}
-
   \begin{center}
-    \begin{table}[h]
+    \begin{table}[h!]
       \centering
-      \begin{tabular}[h]{| l | l |}
+      \begin{tabular}[h!]{| l | l |}
       \hline
       Symbol    &  Distance \\ \hline
       $A_{r_1}$  &     0.0040 \\ \hline
@@ -386,10 +381,9 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
       \label{tab:dist_recvsymbols}
     \end{table}
   \end{center}
-
-  \begin{figure}[h]
+  \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{trans_recv_symbol_constellation.png}
+    \includegraphics[height=3.5in]{trans_recv_symbol_constellation.png}
     \caption{Zoom on the first symbol $A_1$ - showing the transmitted and received symbols. \newline The dotted line represents a portion of the unit circle.}
     \label{fig:zoom_constellation}
   \end{figure}
@@ -397,12 +391,10 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
 
 
 \item Symbols: unsychronized phase channel - difference of $30^o$ between transmitted and received. Table \ref{tab:recvsymbols_phase} shows the values of the symbols received from the matched filter (after sampling). Figure \ref{fig:recv_constellation_phase} shows the received symbols as a constellation. A comparison of the transmitted symbols with the received ones shows that they are quite close, as can be seen in Figure \ref{fig:trans_recv_constellation_phase}. The distances between transmitted symbols to those received are shown in Table \ref{tab:dist_recvsymbols_phase}. The large errors are due to the phase difference between transmitter and receiver.
-
-
   \begin{center}
-    \begin{table}[h]
+    \begin{table}[h!]
       \centering
-      \begin{tabular}[h]{| l | l |}
+      \begin{tabular}[h!]{| l | l |}
       \hline
       k             &  Received Symbol  \\ \hline
       1             &  0.7035 + 0.7053j \\ \hline
@@ -415,20 +407,16 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
       \label{tab:recvsymbols_phase}
     \end{table}
   \end{center}
-
-  \begin{figure}[h]
+  \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{recv_symbol_constellation_phase.png}
+    \includegraphics[height=3.5in]{recv_symbol_constellation_phase.png}
     \caption{Constellation of symbols received with phase difference of $pi/6$}
     \label{fig:recv_constellation_phase}
   \end{figure}
-
-
-
   \begin{center}
-    \begin{table}[h]
+    \begin{table}[h!]
       \centering
-      \begin{tabular}[h]{| l | l |}
+      \begin{tabular}[h!]{| l | l |}
       \hline
       Symbol    &  Distance \\ \hline
       $A_{r_1}$  &  0.5155   \\ \hline
@@ -441,24 +429,22 @@ The time response of the small dataset is shown in Figure \ref{fig:s_M(t)}. The 
       \label{tab:dist_recvsymbols_phase}
     \end{table}
   \end{center}
-
-  \begin{figure}[h]
+  \begin{figure}[h!]
     \centering
-    \includegraphics[height=4in]{trans_recv_symbol_constellation_phase.png}
+    \includegraphics[height=3.5in]{trans_recv_symbol_constellation_phase.png}
     \caption{Constellation of the transmitted and received symbols with phase difference of $pi/6$. \newline The dotted line represents the unit circle.}
     \label{fig:trans_recv_constellation_phase}
   \end{figure}
-
 \end{enumerate}
 
+\clearpage
 \subsection{Receiver, with noise}
 Using Matlab and the definition in Equation \ref{eq:invP_errsym}, we calculate: 
 \begin{itemize}
 \item $p_{err}=10^{-3} \Rightarrow \gamma_{d_{max}} = 10.8276 = 3.3339 \mathrm{[dB]} $
-\item $p_{err}=0.2 \Rightarrow \gamma_{d_{max}} = 1.6424 = 10.1474 \mathrm{[dB]}$
+\item $p_{err}=0.2 \Rightarrow \gamma_{d_{min}} = 1.6424 = 10.1474 \mathrm{[dB]}$
 \end{itemize}
-
-To produce bandlimited gaussian white noise in Matlab, we:
+The following simulation was repeated for the following set of SNR values: $\gamma_d \in {2.1547,\ 4.1547,\ 6.1547,\ 8.1547,\ 10.1547}$. To produce bandlimited gaussian white noise in Matlab, we:
 \begin{enumerate}
 \item create a vector of random samples using normal distribution, n(t), 
 \item filter the random vector using Matlab's 'fir1' and 'filter' functions with appropriate bandwidth.
@@ -467,7 +453,103 @@ Before filtering, the random samples have power density in the range of the samp
 \begin{equation*}
   \sigma_{n_{sim}}^2 = \frac{f_s N_0}{2} = \frac{4 P_r f_c}{R_s \gamma_d}
 \end{equation*}
-This way, after filtering we will have the appropriate variance (power).
+This way, after filtering we will have the appropriate variance (power). Because the filtering is only an approximation of an ideal rectangular filter, we have decided to use the basic 'fir1' Matlab filter and choose an order parameter that gives (approximately) the same power density in the bandwidth region as before filtering. The order we found was 70.
+
+We have simulated an AWGN channel, using a 5,000 bit random transmission. After receiving, the number of incorrect bits was counted and normalized to calculate the bit error rate. Figure \ref{fig:BER_noise} presents the result of the simulation as opposed to the analytical calculation of the probability of bit error, when the phase is ideally synchronized (zero phase difference). Figure \ref{fig:BER_noise_phase} shows the results for two constant phase differences. The resulting graphs are averaged over 10 repetitions with different random noises. Both graphs include error bars indicating the standard deviation of the results.
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{BER_noise.png}
+    \caption{Bit error rate of a noisy channel with ideal phase synchronization, simulated vs. analytic results}
+    \label{fig:BER_noise}
+  \end{figure}
+
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{BER_noise_phase.png}
+    \caption{Bit error rate of a noisy channel with phase difference of $5^o$ and $10^o$, simulated vs. analytic results}
+    \label{fig:BER_noise_phase}
+  \end{figure}
+The power penalty at $P_{err}^{(bit)} = 10^{-2}$ is calculated from the graph in Figure \ref{fig:powerpenalty} by measuring the $SNR$ difference between the analytically derived results and the results for a phase difference of $10^o$. The result shows that the power penalty is $0.83$ [dB].
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{power_penalty.png}
+    \caption{Graphical calculation of the power penalty for $10^o$ phase difference at $P_{err}^{(bit)}=10^{-2}$.}
+    \label{fig:powerpenalty}
+  \end{figure}
+Figure \ref{fig:BER_noise_constellation} demonstrates the received symbols (before decision device) for a $10^o$ constant phase and with additive noise.
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[height=3.5in]{noise_symbol_constellation.png}
+    \caption{Example symbol constellation of AWGN channel with constant phase difference}
+    \label{fig:BER_noise_constellation}
+  \end{figure}
+
+
+\clearpage
+\subsection{Carrier Phase Estimation}
+If the phase of the received signal varies unpredictably, symbol detection becomes a difficult problem. Knowledge of the received carrier phase allows the receiver to compensate the phase shift effect and allows for symbol detection. In this section we shall consider the case of a dispersion of $\sigma_\psi=5^o$ when $SNR_{bit} = 5$ [dB]. The phase compensation will be performed by a decision feedback loop, with a second-order transfer function. Another given parameter is $\tau_1=0.5$. The transfer function of the PLL is given by Equation 6.2.19 from \cite{Proakis}:
+\begin{equation}
+  \label{eq:pll_h}
+  H(s) =\frac{1+\tau_2 s}{\frac{\tau_1}{K} s^2 + s \left( \frac{1}{K}+\tau_2 \right) + 1}
+\end{equation}
+We must choose values for $\tau_2$ and $K$. $\tau_2$ must satisfy the following properties:
+\begin{itemize}
+\item $\tau_2$ must be non-negative and real.
+\item $\tau_2$ must be much smaller than $\tau_1$, i.e. $\tau_1 \gg \tau_2$.
+\end{itemize}
+We shall start by finding the equivalent PLL bandwidth, $B_{eq}$ as a function of the known parameters $\sigma_\psi^2,K_{PD},N_0$:
+\begin{eqnarray*}
+  \sigma_\psi^2 &=& \frac{N_0 B_{eq}}{K_{PD}^2} \\
+  K_{PD} &=& \frac{A_r A_0}{2}\ \{\text{from linear model of phase detector}\}\\
+  N_0 &=& \frac{P_r}{2 R_s {SNR}_{bit}} \\
+  \Rightarrow B_{eq} &=& \frac{ K_{pd}^2 {\sigma}_{\psi}^2}{N_0}
+\end{eqnarray*}
+We recall that $B_{eq}$ is defined in terms of the transfer function, $H(s)$ (which was given in Equation \ref{eq:pll_h}):
+\begin{equation*}
+  B_{eq} = \frac{1}{2 \pi}\int_0^{\infty}{|H(j\omega)|^2 d\omega}
+\end{equation*}
+Using Equation 6.2.12 from \cite{Proakis} as the solution of the above integral, we get:
+\begin{equation*}
+  B_{eq}=\frac{\tau_2^2 \left( \frac{K}{\tau_1}+\frac{1}{\tau_2^2}\right) }{4 \left( \frac{1}{K}+\tau_2\right) }=\frac{\tau_2^2 {K}^2+\tau_1 K}{4 \tau_1 \tau_2 K+4 \tau_1}
+\end{equation*}
+Since we already know $B_{eq}$ we can treat it as a value, and write the above as a quadratic equation in $\tau_2$:
+\begin{equation*}
+  \tau_2^2-\frac{4 \tau_1 B_{eq}}{K}\tau_2 +\frac{\tau_1}{K}-\frac{4 \tau_1 B_{eq}} {K^2}=0
+\end{equation*}
+Which has solutions:
+\begin{equation}
+  \label{eq:tau2_k}
+  \tau_{2_{a,b}}=\frac{2 \tau_1 B_{eq} \pm \sqrt{\tau_1 \left(4 \tau_1 B_{eq}^2 + 4 B_{eq} - K \right) } }{K}
+\end{equation}
+Recalling the restrictions on $\tau_2$ we are led to the following inequalities:
+\begin{eqnarray*}
+  \tau_2 \in \mathbb{R} &\Rightarrow& \tau_1 \left(4 \tau_1 B_{eq}^2 + 4 B_{eq} - K \right) \ge 0 \\
+  \tau_2 \ge 0 &\Rightarrow& \left( 4 \tau_1 B_{eq}\right)^2 > \tau_1 \left(4 \tau_1 B_{eq}^2 + 4 B_{eq} - K \right)
+\end{eqnarray*}
+Solving for $K$ we find the condition:
+\begin{equation}
+  \label{eq:K_cond}
+  4 B_{eq} (\tau_1 B_{eq} + 1)  > K > 4 B_{eq}
+\end{equation}
+Where the left inequality was changed from $\ge$ to $>$ because of the direction to find two solutions for $\tau_2$. Before substituting our values and find the allowed range of $K$, let us check how $K$ affects the damping factor:
+\begin{equation*}
+  \xi = \frac{\frac{1}{K}+\tau_2}{2 \sqrt{\frac{K}{\tau_1}}} 
+\end{equation*}
+How does $\xi$ behave when $K$ is changed? From Equation \ref{eq:tau2_k} we know that as $K$ increases, $\tau_2$ decreases. Consequently, the nominator of $\xi$ decreases and the nominator decreases. Overall, $\xi$ must also decrease with an increasing $K$. Since we have already set a constant $B_{eq}$, we can only desire a large damping factor $\xi$ - this will ensure the fastest possible convergence of the system. For this reason we pick the lower bound: $K=4 B_{eq}$. The resulting value of $\tau_2$ is simply zero, which satisfies both requirements. Now that we have found $K$ we can calculate the VCO factor $K_{VCO}$:
+\begin{equation*}
+  K_{VCO} = \frac{K}{K_{PD}} = \frac{8 B_{eq}}{A_r A_0}
+\end{equation*}
+
+
+
+
+
+
+\clearpage
+\bibliographystyle{plain}
+\bibliography{projectbib}
+
 
 \end{document}
+
 
